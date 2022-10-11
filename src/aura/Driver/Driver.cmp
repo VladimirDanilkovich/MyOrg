@@ -1,0 +1,12 @@
+<!--
+ - Created by vladimirdanilkovich on 4/10/2022.
+ -->
+
+<aura:component description="Driver"
+                extends="c:vertic_Base"
+                implements="force:lightningQuickActionWithoutHeader,force:appHostable"
+                access="global">
+
+
+
+</aura:component>

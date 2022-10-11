@@ -1,0 +1,150 @@
+<apex:page id="vertic_Content"
+           showHeader="false"
+           standardStylesheets="false"
+           sideBar="false"
+           applyBodyTag="false"
+           applyHtmlTag="false"
+           controller="vertic_ContentCtrl"
+           language="en_AU"
+           contentType="{!contentType}"
+           renderAs="{!renderAs}"
+           action="{!onInit}">
+    <html>
+
+    <head>
+
+        <title>{!$CurrentPage.parameters.title}</title>
+
+        <style>
+
+            @page {
+                size: 8.27in 11.69in; /* A4 width and height */
+                margin: 0.1in;
+            {!pageStyles}
+            }
+
+            @page:left {
+                @top-center {
+                    content: element(odd-top-center);
+                }
+                @left-top {
+                    content: element(odd-left-top);
+                }
+                @left-bottom {
+                    content: element(odd-left-bottom);
+                }
+                @right-top {
+                    content: element(odd-right-top);
+                }
+                @right-bottom {
+                    content: element(odd-right-bottom);
+                }
+                @bottom-center {
+                    content: element(odd-bottom-center);
+                }
+                {!pageOddStyles}
+            }
+
+            @page:right {
+                @top-center {
+                    content: element(even-top-center);
+                }
+                @left-top {
+                    content: element(even-left-top);
+                }
+                @left-bottom {
+                    content: element(even-left-bottom);
+                }
+                @right-top {
+                    content: element(even-right-top);
+                }
+                @right-bottom {
+                    content: element(even-right-bottom);
+                }
+                @bottom-center {
+                    content: element(even-bottom-center);
+                }
+                {!pageEvenStyles}
+            }
+
+            * {
+                <apex:outputPanel layout="none" rendered="{!fontSize != 'blank'}">
+                    font-size: {!fontSize};
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!fontFamily != 'blank'}">
+                    font-family: {!fontFamily} !important;
+                </apex:outputPanel>
+            }
+
+            {!customStyles}
+
+            .content {
+                width: 100%;
+                overflow:hidden;
+            }
+
+            /* ODD */
+            .odd-top-center {
+                position: running(odd-top-center);
+            }
+            .odd-left-top {
+                position: running(odd-left-top);
+            }
+            .odd-left-bottom {
+                position: running(odd-left-bottom);
+            }
+            .odd-right-top {
+                position: running(odd-right-top);
+            }
+            .odd-right-bottom {
+                position: running(odd-right-bottom);
+            }
+            .odd-bottom-center {
+                position: running(odd-bottom-center);
+            }
+
+            /* EVEN */
+            .even-top-center {
+                position: running(even-top-center);
+            }
+            .even-left-top {
+                position: running(even-left-top);
+            }
+            .even-left-bottom {
+                position: running(even-left-bottom);
+            }
+            .even-right-top {
+                position: running(even-right-top);
+            }
+            .even-right-bottom {
+                position: running(even-right-bottom);
+            }
+            .even-bottom-center {
+                position: running(even-bottom-center);
+            }
+
+
+            body > div {
+                margin-right:0.5in;
+                margin-left:0.5in;
+            }
+
+            .page-break {
+                page-break-after: always;
+            }
+
+        </style>
+
+        <apex:dynamicComponent componentValue="{!headComponent}" invokeAfterAction="true"/>
+
+    </head>
+
+    <body>
+
+    <apex:include pageName="vertic_ContentBody"/>
+
+    </body>
+
+    </html>
+
+</apex:page>

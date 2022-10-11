@@ -1,0 +1,30 @@
+<apex:component id="vertic_DocumentImage" controller="vertic_DocumentImageCtrl" layout="none">
+
+    <apex:attribute name="documentUniqueName"
+                    required="{!true}"
+                    assignTo="{!documentAPIName}"
+                    type="String"
+                    description="Document DeveloperName"
+    />
+
+    <apex:attribute name="alt"
+                    type="String"
+                    default=""
+                    description="Alt for img tag."
+    />
+
+    <apex:attribute name="cssClasses"
+                    type="String"
+                    default=""
+                    description="CSS class for img tag."
+    />
+
+    <apex:attribute name="cssStyles"
+                    type="String"
+                    default=""
+                    description="CSS class for img tag."
+    />
+
+    <img src="{!link}" alt="{!alt}" class="{!cssClasses}" style="{!cssStyles}" />
+
+</apex:component>

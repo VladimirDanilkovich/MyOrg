@@ -1,0 +1,83 @@
+<aura:component description="vertic_AsyncProcesses" extends="c:vertic_Base" implements="flexipage:availableForAllPageTypes">
+
+    <!-- ATTRIBUTES -->
+    <aura:attribute name="groupKey" type="String"/>
+    <aura:attribute name="title" type="String" default="Async Processes"/>
+    <aura:attribute name="iconName" type="String"/>
+    <aura:attribute name="condition" type="String"/>
+    <aura:attribute name="soqlLimit" type="Integer"/>
+    <aura:attribute name="limit" type="Integer" default="{!10}"/>
+    <aura:attribute name="orderBy" type="String" default="CreatedDate DESC"/>
+    <aura:attribute name="fields" type="String" default="Id, Description__c, Status__c, CreatedDate"/>
+    <aura:attribute name="count" type="Integer" default="0" access="private"/>
+    <aura:attribute name="hasMoreRecords" type="Boolean" default="{!false}" access="private"/>
+
+    <!-- HANDLERS -->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+    <aura:handler event="force:refreshView" action="{!c.handleRefresh}"/>
+
+    <lightning:card class="slds-card_boundary forceRelatedListCardDesktop">
+
+        <aura:set attribute="title">
+            <div class="slds-grid">
+                <div class="slds-col">
+                    <lightning:icon iconName="{#v.iconName}" size="small"/>
+                </div>
+                <div class="slds-col slds-col--padded slds-size--1-of-1">
+                    <div class="slds-text-heading_small">
+                        {#v.title}&nbsp;({!v.count}{!if(v.hasMoreRecords, '+', '')})
+                    </div>
+                </div>
+            </div>
+        </aura:set>
+
+        <aura:set attribute="actions">
+            <lightning:buttonIcon iconName="utility:refresh"
+                                  variant="border-filled"
+                                  onclick="{!c.handleRefresh}"
+                                  alternativeText="Refresh"
+            />
+        </aura:set>
+
+        <p class="slds-p-horizontal_small">
+            <aura:if isTrue="{!v.soqlLimit > 0}">
+                <c:vertic_SOQLDatatable aura:id="dataTable"
+                                        sObjectType="Vertic_Async_Process__c"
+                                        fields="{!v.fields}"
+                                        condition="{#v.condition}"
+                                        countRecords="{!v.count}"
+                                        limit="{!v.soqlLimit}"
+                                        hasMoreRecords="{!v.hasMoreRecords}"
+                                        orderBy="{!v.orderBy}"
+                />
+            </aura:if>
+        </p>
+
+        <aura:set attribute="footer">
+            <aura:if isTrue="{!v.count > v.limit}">
+                <a href="javascript:void(0);" onclick="{!c.handleLessClick}">
+                    <span>
+                        Show Less
+                    </span>
+                </a>
+                <aura:if isTrue="{!v.hasMoreRecords}">
+                    &nbsp;|&nbsp;
+                </aura:if>
+            </aura:if>
+            <aura:if isTrue="{!v.hasMoreRecords}">
+                <a href="javascript:void(0);" onclick="{!c.handleMoreClick}">
+                    <span>
+                        Show More
+                    </span>
+                </a>&nbsp;|&nbsp;
+                <a href="javascript:void(0);" onclick="{!c.handleViewAllClick}">
+                    <span>
+                        View All
+                    </span>
+                </a>
+            </aura:if>
+        </aura:set>
+
+    </lightning:card>
+
+</aura:component>

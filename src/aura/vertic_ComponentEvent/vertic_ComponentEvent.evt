@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="vertic_ComponentEvent">
+    <aura:attribute name="payload" type="Map"/>
+</aura:event>

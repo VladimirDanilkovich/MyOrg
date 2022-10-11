@@ -1,0 +1,11 @@
+<apex:component id="vertic_AllowUrl">
+    <script>
+        (function(app){
+            app.filter("allowUrl", ['$sce', function($sce) {
+                return function(url){
+                    return $sce.trustAsResourceUrl(url);
+                }
+            }]);
+        })(window.app)
+    </script>
+</apex:component>

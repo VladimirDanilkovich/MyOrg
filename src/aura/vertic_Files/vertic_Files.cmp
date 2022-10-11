@@ -1,0 +1,37 @@
+<aura:component description="vertic_Files" extends="c:vertic_Base" extensible="true">
+
+    <aura:set attribute="processor" value="vertic_SOQLProc"/>
+
+    <aura:attribute name="documents" type="List"/>
+    <aura:attribute name="accept" type="String"/>
+    <aura:attribute name="multiple" type="Boolean" default="{!true}"/>
+    <aura:attribute name="disabled" type="Boolean" default="{!false}"/>
+    <aura:attribute name="additionalConditions" type="String"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+    <aura:handler event="force:refreshView" action="{!c.handleInit}"/>
+
+    <aura:registerEvent type="c:vertic_ComponentEvent" name="onRefresh"/>
+    <aura:registerEvent type="c:vertic_ComponentEvent" name="onFileUpload"/>
+
+    <div>
+        <lightning:fileUpload name="fileUploader"
+                              label=" "
+                              multiple="{!v.multiple}"
+                              disabled="{!v.disabled}"
+                              recordId="{!v.recordId}"
+                              accept="{!v.accept}"
+                              onuploadfinished="{!c.handleUploadFinished}"/>
+
+        <div aura:id="form" class="slds-form slds-m-top_small" role="list">
+            <div class="slds-grid slds-gutters_small slds-m-bottom_medium slds-wrap">
+                <aura:iteration var="document" items="{!v.meta.dto.records}">
+                    <div class="slds-col slds-size_4-of-12 slds-m-vertical--small">
+                        <lightning:fileCard fileId="{!document.ContentDocumentId}"/>
+                    </div>
+                </aura:iteration>
+            </div>
+        </div>
+    </div>
+
+</aura:component>

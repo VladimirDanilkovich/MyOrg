@@ -1,0 +1,51 @@
+<apex:component id="vertic_Resources">
+
+    <apex:attribute name="include" description="Script inclusions" type="String" default=" "/>
+    <apex:attribute name="exclude" description="Script exclusions" type="String" default=" "/>
+    <apex:attribute name="dependency" description="AngularJS dependencies" type="String" default=" "/>
+
+    <apex:outputPanel rendered="{!not(contains(lower(exclude), 'jquery'))}" layout="none">
+        <script src="{!URLFOR($Resource.vertic_Resources, '/jquery/jquery-1.12.4.min.js')}"></script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!contains(lower(include), 'bootstrap.js')}" layout="none">
+        <script src="{!URLFOR($Resource.vertic_Resources, '/bootstrap/js/bootstrap.min.js')}"></script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!not(contains(lower(exclude), 'bootstrap.css'))}" layout="none">
+        <link href="{!URLFOR($Resource.vertic_Resources, '/bootstrap/css/bootstrap.min.css')}" type="text/css" rel="stylesheet"/>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!contains(lower(include), 'bootstrap-multiselect')}" layout="none">
+        <link href="{!URLFOR($Resource.vertic_Resources, '/bootstrap/css/bootstrap-multiselect.css')}" type="text/css" rel="stylesheet"/>
+        <script src="{!URLFOR($Resource.vertic_Resources, '/bootstrap/js/bootstrap-multiselect.min.js')}"></script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!contains(lower(include), 'bootstrap-toggle')}" layout="none">
+        <link href="{!URLFOR($Resource.vertic_Resources, '/bootstrap/css/bootstrap-toggle.min.css')}" type="text/css" rel="stylesheet"/>
+        <script src="{!URLFOR($Resource.vertic_Resources, '/bootstrap/js/bootstrap-toggle.min.js')}"></script>
+    </apex:outputPanel>
+
+    <script src="{!URLFOR($Resource.vertic_Resources, '/angular/angular-1.7.2.min.js')}"></script>
+
+    <apex:outputPanel rendered="{!contains(lower(dependency), 'ngmask')}" layout="none">
+        <script src="{!URLFOR($Resource.vertic_Resources, '/angular/ngMask-3.1.1.min.js')}"></script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!contains(lower(dependency), 'ngsanitize')}" layout="none">
+        <script src="{!URLFOR($Resource.vertic_Resources, '/angular/angular-sanitize.min.js')}"></script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!contains(lower(include), 'eway')}" layout="none">
+        <script src="https://secure.ewaypayments.com/scripts/eCrypt.min.js"></script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!contains(lower(dependency), 'vcrecaptcha')}" layout="none">
+        <script src="{!URLFOR($Resource.vertic_Resources, '/angular/angular-recaptcha.min.js')}"></script>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!contains(lower(dependency), 'ngmessages')}" layout="none">
+        <script src="{!URLFOR($Resource.vertic_Resources, '/angular/angular-messages.min.js')}"></script>
+    </apex:outputPanel>
+
+</apex:component>

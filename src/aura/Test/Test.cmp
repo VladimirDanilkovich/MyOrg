@@ -1,0 +1,7 @@
+<!--
+ - Created by vladimirdanilkovich on 3/10/2022.
+ -->
+
+<aura:component description="Test">
+    <p> TTTT</p>
+</aura:component>

@@ -1,0 +1,60 @@
+<aura:component description="vertic_Datatable" extensible="true" extends="c:vertic_Base">
+
+    <ltng:require scripts="{!$Resource.vertic_Resources + '/lodash/lodash.min.js'}"
+                  afterScriptsLoaded="{!c.handleScriptsLoaded}"
+    />
+
+    <aura:attribute type="Boolean" name="showNoRecordsMessage" default="{!false}"/>
+    <aura:attribute type="Boolean" name="showNoRecordsHeaders" default="{!false}"/>
+    <aura:attribute type="Boolean" name="showSpinner" default="{!false}"/>
+    <aura:attribute type="String" name="noRecordsMessage" default="No Records"/>
+    <aura:attribute type="Object" name="data"/>
+    <aura:attribute type="Map" name="attributes" default="{'hideCheckboxColumn':true}"/>
+
+    <aura:method name="setData" action="{!c.handleSetData}">
+        <aura:attribute name="records" type="List"></aura:attribute>
+    </aura:method>
+
+    <aura:method name="setAttr" action="{!c.handleSetAttr}">
+        <aura:attribute name="attr" type="String"/>
+        <aura:attribute name="val" type="Object"/>
+    </aura:method>
+
+    <aura:method name="getSelectedRows" action="{!c.handleGetSelectedRows}">
+    </aura:method>
+
+    <aura:method name="sort" action="{!c.handleSort}">
+    </aura:method>
+
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+
+    <aura:registerEvent name="onRowAction" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onSort" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onAfterDatatableLoad" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onRowSelection" type="c:vertic_ComponentEvent"/>
+
+    <c:vertic_Utils context="{!this}"/>
+    <div class="slds-is-relative">
+        <aura:if isTrue="{! v.showSpinner }">
+            <lightning:spinner variant="brand" size="medium" alternativeText="Loading"/>
+        </aura:if>
+        <div aura:id="datatableContainer">
+            <lightning:datatable aura:id="datatable"
+                                 keyField="Id"
+                                 onsort="{! c.handleOnSort }"
+                                 onrowaction="{!c.handleRowAction}"
+                                 resizeColumnDisabled="{!true}"
+                                 data="{!v.data}"
+                                 hideCheckboxColumn="{!true}"
+                                 onrowselection="{! c.handleRowSelection }"
+            />
+        </div>
+
+        <aura:if isTrue="{!and(v.showNoRecordsMessage, not(empty(v.noRecordsMessage)))}">
+            <div class="slds-text-align--center slds-m-vertical--medium">
+                {!v.noRecordsMessage}
+            </div>
+        </aura:if>
+    </div>
+
+</aura:component>

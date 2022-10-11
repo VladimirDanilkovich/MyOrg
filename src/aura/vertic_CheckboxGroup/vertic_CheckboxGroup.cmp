@@ -1,0 +1,46 @@
+<aura:component description="vertic_CheckboxGroup">
+
+    <!-- Attribute Overrides -->
+    <!-- <aura:set attribute="processor" value="vertic_GetPageReferenceContentProc"/> -->
+    <!-- <aura:set attribute="hideContentOnBusy" value="{!false}"/> -->
+
+
+    <!-- Attributes -->
+    <aura:attribute name="options" type="List" access="global" required="{!true}"/>
+    <aura:attribute name="value" type="String" access="global" required="{!true}"/>
+    <aura:attribute name="label" type="String" access="global" required="{!true}"/>
+    <aura:attribute name="disabled" type="Boolean" access="global" default="{!false}"/>
+    <aura:attribute name="required" type="Boolean" access="global" default="{!false}"/>
+    <aura:attribute name="messageWhenValueMissing" type="String" access="global" default="Complete this field"/>
+
+    <aura:attribute name="cmpValue" type="List" access="private" default="[]"/>
+
+    <!-- Events -->
+    <!-- <aura:registerEvent name="onSuccess" type="c:vertic_ComponentEvent"/>-->
+
+    <!-- Handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+    <aura:handler name="change" value="{!v.value}" action="{!c.handleInit}"/>
+
+    <!-- Methods -->
+     <!--<aura:method name="refresh" action="{!c.handleInit}"></aura:method> -->
+
+    <lightning:checkboxGroup label="{!v.label}"
+                             disabled="{!v.disabled}"
+                             required="{!v.required}"
+                             messageWhenValueMissing="{!v.messageWhenValueMissing}"
+                             options="{! v.options }"
+                             value="{!v.cmpValue}"
+                             onchange="{! c.handleCheckboxGroupChange }"/>
+
+    <!--<aura:iteration items="{!v.options}" var="option">-->
+        <!--<lightning:input label="{!option.label}"-->
+                         <!--value="{!option.value}"-->
+                         <!--checked="{!v.value == option.value}"-->
+                         <!--type="checkbox"-->
+                         <!--onchange="{!c.handleCheckboxChange}"-->
+                         <!--disabled="{!v.disabled}"-->
+        <!--/>-->
+    <!--</aura:iteration>-->
+
+</aura:component>

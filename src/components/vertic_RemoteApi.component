@@ -1,0 +1,186 @@
+<apex:component id="vertic_RemoteApi">
+    <script>
+        (function(module){
+
+            module.provider('remoteApi', function() {
+
+                var _apiMethods;
+                var _apexControllerName;
+                var _apexExtensionControllerNames;
+                var _requiestOptions = {
+                    buffer: false,
+                    escape: false,
+                    timeout: 120000
+                };
+                var _debugMode = false;
+                var _onBeforeInvokeAction = function(){};
+                var _onRequestStartEventName = 'remoteStart';
+                var _onRequestFinishEventName = 'remoteFinish';
+                var _onRequestErrorEventName = 'remoteError';
+                var _onRequestSuccessEventName = 'remoteSuccess';
+
+                this.$get = ['$injector', function ($injector){
+                    var $q = $injector.get('$q');
+                    var $rootScope = $injector.get('$rootScope');
+
+                    var _invokeRemoteAction = function(actionName, data, options) {
+
+                        options = options || {};
+
+                        if (_debugMode){
+                            console.info(actionName, data);
+                        }
+
+                        return $q(function(resolve, reject) {
+
+                            var callback = function(result, event) {
+                                if (event.status) {
+                                    if (_debugMode) console.warn(actionName, result);
+                                    $rootScope.$broadcast(_onRequestSuccessEventName, {actionName: actionName, data: data, options: options, result: result});
+                                    resolve(result);
+                                } else {
+                                    if (_debugMode) console.error(actionName, event);
+                                    $rootScope.$broadcast(_onRequestErrorEventName, {actionName: actionName, data: data, options: options, error: event});
+                                    reject(event);
+                                }
+
+                                $rootScope.$broadcast(_onRequestFinishEventName, {actionName: actionName, data: data, options: options});
+                            };
+
+                            $rootScope.$broadcast(_onRequestStartEventName, {actionName: actionName, data: data, options: options});
+
+                            _onBeforeInvokeAction(actionName, data);
+
+                            if (data === undefined) {
+                                Visualforce.remoting.Manager.invokeAction(
+                                        actionName,
+                                        callback,
+                                        _requiestOptions
+                                );
+                            } else {
+                                Visualforce.remoting.Manager.invokeAction(
+                                        actionName,
+                                        data,
+                                        callback,
+                                        _requiestOptions
+                                );
+                            }
+
+                        });
+                    };
+
+                    var _api = {};
+
+                    if(_apexControllerName){
+                        var vfController = window[_apexControllerName];
+
+                        for(var action in vfController){
+                            (function(action){
+                                _api[action] = function () {
+                                    return _invokeRemoteAction(
+                                            _apexControllerName + '.' + action,
+                                            arguments.length ? arguments[0] : undefined,
+                                            arguments.length > 1 ? arguments[1] : undefined
+                                    )
+                                }
+                            })(action)
+                        }
+                    } else if (_apiMethods){
+                        for(var apiMethodData in _apiMethods){
+                            (function(apiMethodData){
+                                var url = _apiMethods[apiMethodData];
+                                _api[apiMethodData] = function(){
+                                    return _invokeRemoteAction(
+                                            url,
+                                            arguments.length ? arguments[0] : undefined,
+                                            arguments.length > 1 ? arguments[1] : undefined
+                                    );
+                                };
+                            })(apiMethodData);
+                        }
+                    } else {
+                        throw 'Setup Apex Controller Name or API Methods. Please check remoteApiProvider.'
+                    }
+
+                    if (_apexExtensionControllerNames) {
+                        var vfControllers = _apexExtensionControllerNames.split(',');
+
+                        vfControllers.forEach(function(controller) {
+                            var vfController = window[controller];
+
+                            for(var action in vfController){
+                                (function(action){
+                                    _api[action] = function () {
+                                        return _invokeRemoteAction(
+                                            controller + '.' + action,
+                                            arguments.length ? arguments[0] : undefined,
+                                            arguments.length > 1 ? arguments[1] : undefined
+                                        )
+                                    }
+                                })(action)
+                            }
+                        });
+                    }
+
+                    return _api;
+                }];
+
+                this.setApexControllerName = function(apexControllerName){
+                    _apexControllerName = apexControllerName;
+                    return this;
+                };
+
+                this.setApexExtensionControllerNames = function(apexExtensionControllerNames){
+                    _apexExtensionControllerNames = apexExtensionControllerNames;
+                    return this;
+                };
+
+                this.setRequestOptions = function(options){
+                    _requiestOptions = options;
+                    return this;
+                };
+
+                this.getRequestOptions = function(){
+                    return _requiestOptions;
+                };
+
+                this.setApiMethods = function(apiMethods){
+                    _apiMethods = apiMethods;
+                    return this;
+                };
+
+                this.setDebugMode = function(debugMode){
+                    _debugMode = debugMode;
+                    return this;
+                };
+
+                this.setOnRequestStartEventName = function(onRequestStartEventName){
+                    _onRequestStartEventName = onRequestStartEventName;
+                    return this;
+                };
+
+                this.setOnRequestFinishEventName = function(onRequestFinishEventName){
+                    _onRequestFinishEventName = onRequestFinishEventName;
+                    return this;
+                };
+
+                this.setOnRequestErrorEventName = function(onRequestErrorEventName){
+                    _onRequestErrorEventName = onRequestErrorEventName;
+                    return this;
+                };
+
+                this.setOnRequestSuccesEventName = function(onRequestSuccessEventName){
+                    _onRequestSuccessEventName = onRequestSuccessEventName;
+                    return this;
+                };
+
+                this.setOnBeforeInvokeAction = function(onBeforeInvokeAction){
+                    _onBeforeInvokeAction = onBeforeInvokeAction;
+                    return this;
+                };
+
+            });
+
+        })(window.app);
+    </script>
+</apex:component>

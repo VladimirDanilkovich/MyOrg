@@ -1,0 +1,258 @@
+<apex:component id="vertic_DateTimePicker">
+
+    <apex:attribute name="include" description="Script inclusions" type="String"/>
+    <apex:attribute name="exclude" description="Script exclusions" type="String"/>
+
+    <link rel="stylesheet" href="{!if(contains(lower(include), 'bootstrap.css'), 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css', '')}" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+    <apex:outputPanel rendered="{!not(contains(lower(exclude), 'bootstrap.js'))}">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </apex:outputPanel>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+    <style>
+        input.date-time-picker {
+            cursor: pointer;
+        }
+
+        .bootstrap-datetimepicker-widget .dropdown-menu, .bootstrap-datetimepicker-widget.dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            display: none;
+            float: left;
+            min-width: 160px;
+            padding: 5px 0;
+            margin: 2px 0 0;
+            font-size: 14px;
+            text-align: left;
+            list-style: none;
+            background-color: #fff;
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+            border: 1px solid #ccc;
+            border: 1px solid rgba(0, 0, 0, .15);
+            border-radius: 4px;
+            -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+        }
+
+        .bootstrap-datetimepicker-widget .input-group {
+            position: relative;
+            display: table;
+            border-collapse: separate;
+        }
+
+        .bootstrap-datetimepicker-widget .input-group-addon:not(:first-child):not(:last-child) {
+            border-radius: 0;
+        }
+
+        .bootstrap-datetimepicker-widget .input-group-addon {
+            display: table-cell;
+            width: 1%;
+            white-space: nowrap;
+            vertical-align: middle;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1;
+            color: #555;
+            text-align: center;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .bootstrap-datetimepicker-widget .input-group .form-control:first-child,
+        .bootstrap-datetimepicker-widget .input-group-addon:first-child {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-right: 0 !important;
+        }
+
+        .bootstrap-datetimepicker-widget .input-group-addon:last-child {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-left: 0 !important;
+        }
+
+        .bootstrap-datetimepicker-widget td.day {
+            padding: 0;
+        }
+        .bootstrap-datetimepicker-widget .list-unstyled {
+            padding: 0;
+            list-style: none;
+        }
+        .bootstrap-datetimepicker-widget .list-unstyled li {
+            padding: 0;
+            margin: 0;
+        }
+        .bootstrap-datetimepicker-widget table.table-condensed {
+            margin: 0;
+            padding: 0;
+        }
+        .bootstrap-datetimepicker-widget table.table-condensed td {
+            font-size: 14px;
+            line-height: 30px;
+            padding: 0;
+        }
+        .bootstrap-datetimepicker-widget table.table-condensed th {
+            font-size: 14px;
+            background: white;
+            color: black;
+            line-height: 30px;
+            border: none;
+        }
+    </style>
+
+    <ang-script style="display: none;" type="text/ng-template" id="vertic_DateTimePickerTemplate">
+        <div class="input-group date" ng-class="{'input-group' : !$ctrl.hideIcon}">
+            <input id="{{$ctrl.id}}"
+                   name="{{$ctrl.name}}"
+                   label="{{$ctrl.label}}"
+                   ng-model="$ctrl.model"
+                   ng-required="$ctrl.isRequired"
+                   class="form-control date-time-picker {{$ctrl.additionalClasses}}"
+                   type="text"
+                   placeholder="{{$ctrl.placeholder}}"
+                   autocomplete="off"
+                   ng-blur="$ctrl.handleBlur()"
+            />
+            <span class="input-group-addon" ng-click="$ctrl.focus()" ng-hide="$ctrl.hideIcon">
+                <span class="glyphicon glyphicon-{{$ctrl.icon || 'calendar'}}"></span>
+            </span>
+        </div>
+    </ang-script>
+
+    <script>
+        (function (app) {
+
+            var templateHTML = document.getElementById('vertic_DateTimePickerTemplate').innerHTML;
+
+            var controller = function ($rootScope, $scope, $element, $timeout) {
+
+                var ctrl = this
+
+                var initDateInput = function () {
+
+                    var DEFAULT_DATE_FORMAT = ctrl.format || 'DD/MM/YYYY';
+
+                    $timeout(function () {
+
+                        var $dateInput = $('input', $element);
+
+                        var isInit;
+
+                        var datepickerOptions = {
+                            format: DEFAULT_DATE_FORMAT,
+                            useCurrent: ctrl.useCurrent || false,
+                            showTodayButton: ctrl.showTodayButton || true,
+                            keepInvalid: true
+                        };
+
+                        if (ctrl.stepping) {
+                            datepickerOptions.stepping = ctrl.stepping;
+                        }
+
+                        if (ctrl.minDate) {
+                            datepickerOptions.minDate = moment(ctrl.minDate, 'YYYY-MM-DD');
+                        }
+
+                        if (ctrl.maxDate) {
+                            datepickerOptions.maxDate = moment(ctrl.maxDate, 'YYYY-MM-DD');
+                        }
+
+                        if (ctrl.sideBySide) {
+                            datepickerOptions.sideBySide = ctrl.sideBySide;
+                        }
+
+                        if (ctrl.viewModel) {
+                            datepickerOptions.viewModel = ctrl.viewModel;
+                        }
+
+                        if (ctrl.model) {
+                            isInit = true;
+                            datepickerOptions.defaultDate = moment(ctrl.model, DEFAULT_DATE_FORMAT);
+                        }
+
+                        $dateInput.datetimepicker(datepickerOptions).on('dp.change', function (e) {
+                            var selectedDate = e.date;
+                            if (!selectedDate._isAMomentObject || !selectedDate.isValid) {
+                                return;
+                            }
+                            $timeout(function () {
+                                ctrl.model = selectedDate.format(DEFAULT_DATE_FORMAT);
+                            }, 10);
+
+                            if (isInit) {
+                                isInit = false;
+                                return; // don't trigger change event on init.
+                            }
+
+                            $rootScope.$broadcast('dateTimePicker-change', {
+                                id: ctrl.id,
+                                currentValue: ctrl.model
+                            });
+                        });
+
+                    }, 10);
+
+                };
+
+                ctrl.handleBlur = function () {
+                    var val = ctrl.model;
+                    var DEFAULT_DATE_FORMAT = ctrl.format || 'D/MM/YYYY';
+                    var momentDate = moment(val, DEFAULT_DATE_FORMAT);
+
+                    if (!momentDate.isValid()) {
+                        ctrl.model = '';
+                    }
+                }
+
+                ctrl.focus = function () {
+                    var $dateInput = $('input', $element);
+                    $dateInput.focus();
+                }
+
+                ctrl.$onInit = function () {
+                    initDateInput();
+                    console.log('INIT: DateTimePicker')
+                }
+            }
+
+            if (app) {
+                app.component(
+                        'dateTimePicker', {
+                            template: templateHTML,
+                            controller: controller,
+                            bindings: {
+                                model: '=',
+                                placeholder: '@',
+                                classes: '<',
+                                id: '@',
+                                name: '@',
+                                format: '<',
+                                stepping: '<',
+                                minDate: '<',
+                                maxDate: '<',
+                                sideBySide: '<',
+                                showTodayButton: '<',
+                                useCurrent: '<',
+                                viewModel: '<',
+                                icon: '<',
+                                hideIcon: '<',
+                                isRequired: '<',
+                                label: '@'
+                            }
+                        }
+                )
+            }
+
+        })(window.app)
+
+    </script>
+
+</apex:component>

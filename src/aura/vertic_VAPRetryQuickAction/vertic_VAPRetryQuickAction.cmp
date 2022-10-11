@@ -1,0 +1,79 @@
+<aura:component description="vertic_VAPRetryQuickAction"
+                extends="c:vertic_Base"
+                implements="force:lightningQuickActionWithoutHeader,force:appHostable"
+                access="global">
+
+    <!-- Attribute Overrides -->
+    <!--    <aura:set attribute="processor" value="AddDirectDebitTokenQAMetaProc"/>-->
+    <!--    <aura:set attribute="hideContentOnBusy" value="{!false}"/>-->
+
+    <!-- Attributes -->
+    <aura:attribute type="Aura.Component[]" name="initialMessage">
+        <p class="slds-text-align_center">
+            Please confirm you want to Retry the Process.
+        </p>
+    </aura:attribute>
+
+    <aura:attribute type="Aura.Component[]" name="successProcessedMessage">
+        <p class="slds-theme--success slds-text-align_center slds-p-vertical_small">
+            Processed successfully
+        </p>
+        <aura:if isTrue="{!not(empty(v.meta.dto.vap.Details__c))}">
+            <p class="slds-box slds-m-vertical_medium">
+                {!v.meta.dto.vap.Details__c}
+            </p>
+        </aura:if>
+    </aura:attribute>
+
+    <aura:attribute type="Aura.Component[]" name="failProcessedMessage">
+        <p class="slds-theme--error slds-text-align_center slds-p-vertical_small">
+            Process failed
+        </p>
+
+        <p class="slds-box slds-m-vertical_medium">
+            {!v.meta.dto.vap.Details__c}
+        </p>
+    </aura:attribute>
+
+    <aura:attribute type="Aura.Component[]" name="errorMessage">
+        <p class="slds-theme--error slds-text-align_center slds-p-vertical_small">
+            Process failed
+        </p>
+        <p class="slds-box">
+            {!v.meta.errorMessage}
+        </p>
+    </aura:attribute>
+
+    <aura:attribute type="Aura.Component[]" name="message"></aura:attribute>
+
+    <!-- Events -->
+    <!-- <aura:registerEvent name="onSuccess" type="c:vertic_ComponentEvent"/>-->
+
+    <!-- Handlers -->
+    <!--    <aura:handler name="init" value="{!this}" action="{!c.baseHandleInit}"/>-->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+    <c:vertic_QuickActionModal aura:id="modal"
+                               title="Retry Process"
+                               heightPX="350"
+                               widthPercentage="40"
+                               refreshOnCancel="{!true}"
+                               maxWidthRem="60"
+                               minWidthRem="25">
+
+        <div class="slds-m-bottom_large">
+            {!v.message}
+        </div>
+
+        <aura:set attribute="footer">
+            <lightning:button type="button"
+                              disabled="{!v.isBusy}"
+                              label="Confirm Retry"
+                              variant="brand"
+                              onclick="{!c.handleConfirmClick}">
+            </lightning:button>
+        </aura:set>
+    </c:vertic_QuickActionModal>
+</aura:component>

@@ -1,0 +1,41 @@
+<apex:component id="vertic_JobCounter">
+    <script>
+        (function(app){
+
+            if(app){
+
+                app.factory('jobCounter', function ($rootScope) {
+
+                    var counter = 0
+                    var broadcastEvent = function (payload) {
+                        $rootScope.$broadcast('jobCounter', {
+                            type: 'enqueue',
+                            counter: counter,
+                            hasJobs: counter > 0,
+                            payload: payload
+                        })
+                    }
+
+                    return {
+                        enqueue: function (payload) {
+                            counter++
+                            broadcastEvent(payload)
+                        },
+                        dequeue: function (payload) {
+                            if (counter > 0){
+                                counter--
+                            }
+                            broadcastEvent(payload)
+                        },
+                        hasJobs: function () {
+                            return counter > 0
+                        }
+                    }
+
+                })
+
+            }
+
+        })(window.app)
+    </script>
+</apex:component>

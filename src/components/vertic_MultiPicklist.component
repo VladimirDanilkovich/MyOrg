@@ -1,0 +1,45 @@
+<apex:component id="vertic_MultiPicklist">
+
+	<!--
+		Binds SF MultiPicklist value to HTML select.
+		'A;B' -> [A, B] and vise-versa
+	-->
+
+	<apex:variable value="{! 'multiPicklist' }" var="cmpName"/>
+
+	<script>
+		(function(app){
+
+			if (app) {
+
+                var directiveName = '{!cmpName}';
+                directiveName = directiveName.charAt(0).toLowerCase() + directiveName.slice(1);
+
+                app.directive(directiveName, ['$parse',
+                    function($parse) {
+                        return {
+                            restrict: 'A',
+                            require: '?ngModel',
+                            link: function(scope, element, attributes, ngModel) {
+
+                                if(ngModel) { // Don't do anything unless we have a model
+
+                                    ngModel.$parsers.push(function (value) {
+                                        return value ? value.join(';') : value;
+                                    });
+
+                                    ngModel.$formatters.push(function (value) {
+                                        return value ? value.split(';') : value;
+                                    });
+
+                                }
+                            }
+                        };
+                    }
+                ]);
+
+			}
+		})(window.app)
+	</script>
+
+</apex:component>

@@ -1,0 +1,40 @@
+<apex:component id="vertic_Tooltip">
+
+    <link href="{!URLFOR($Resource.vertic_Resources, '/bootstrap/css/bootstrap-tooltip.css')}" type="text/css" rel="stylesheet"/>
+    <script src="{!URLFOR($Resource.vertic_Resources, '/bootstrap/js/bootstrap-tooltip.min.js')}"></script>
+
+    <apex:variable value="{! 'tooltip' }" var="cmpName"/>
+
+    <script>
+        (function(app){
+
+            if (app) {
+
+                var directiveName = '{!cmpName}';
+                directiveName = directiveName.charAt(0).toLowerCase() + directiveName.slice(1);
+
+                app.directive(directiveName, ['$parse',
+                    function($parse) {
+                        return {
+                            restrict: 'A',
+                            link: function(scope, element, attributes) {
+
+                                if (attributes.title) { // Don't do anything unless we have a title
+
+                                    if (typeof $().tooltip == 'function') {
+                                        setTimeout(function() {
+                                            $(element).tooltip()
+                                        }, 10)
+                                    }
+
+                                }
+                            }
+                        };
+                    }
+                ]);
+
+            }
+        })(window.app)
+    </script>
+
+</apex:component>

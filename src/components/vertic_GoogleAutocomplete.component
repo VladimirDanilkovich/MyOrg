@@ -1,0 +1,219 @@
+<apex:component id="vertic_GoogleAutocomplete">
+
+    <apex:attribute name="APIkey" description="Google access API Key" type="String" required="true" />
+
+    <!-- Google Geocode API-->
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key={!APIkey}&libraries=places&language=en">
+    </script>
+
+    <style>
+        .pac-container {
+            z-index: 999999 !important;
+        }
+    </style>
+
+    <script type="text/ng-template" id="vertic_GoogleAutocompleteTpl">
+        <div class="c-google-address-autocomplete">
+            <input type="text"
+                   class="{{$ctrl.styleClass}}"
+                   id="{{$ctrl.id}}"
+                   placeholder="{{$ctrl.placeholder}}"
+                   ng-model="$ctrl.address"
+                   autocomplete="new-password"
+                   ng-blur="$ctrl.handleBlur()"
+            />
+            <!--<span ng-if="$ctrl.showNote">-->
+            <!--Please ensure your address result is correct.-->
+            <!--</span>-->
+        </div>
+    </script>
+
+    <script>
+
+        (function(app){
+
+            var templateHTML = document.getElementById('vertic_GoogleAutocompleteTpl').innerHTML;
+
+            var controller = function($scope, $rootScope, $element) {
+
+                var ctrl = this
+
+                ctrl.formatUnitLevelStreet = function () {
+                    var parts = [];
+                    if(ctrl.unitLevel){
+                        parts.push(ctrl.unitLevel);
+                    }
+                    if(ctrl.streetOnly){
+                        parts.push(ctrl.streetOnly);
+                    }
+                    ctrl.street = parts.length ? parts.join(', ') : '';
+                }
+
+                ctrl.initStreet = function () {
+                    if(ctrl.unitLevel != undefined && ctrl.street != undefined){
+
+                        debugger
+
+                        ctrl.streetOnly = ctrl.street.replace(ctrl.unitLevel + ', ', '');
+                        // ctrl.street = ctrl.street.replace(ctrl.unitLevel + ', ', '');
+                    } else {
+                        ctrl.streetOnly = ctrl.street;
+                    }
+                }
+
+                ctrl.$onInit = function() {
+                    console.log('INIT: GoogleAutocomplete')
+
+                    ctrl.initStreet();
+
+                    var autocomplete;
+
+                    ctrl.types = ctrl.types ? ctrl.types.split(',') : ['geocode'];
+
+                    var initGoogleAutocomplete = function() {
+
+                        var input = $('input', $element)[0];
+
+                        var options = {
+                            types: ctrl.types,
+                            componentRestrictions: {country: ctrl.country || 'au'}
+                        };
+
+                        autocomplete = new google.maps.places.Autocomplete(input, options);
+
+                        var onAddressChange = function(autocomplete){
+                            var place = autocomplete.getPlace();
+                            var componentByType = [];
+                            var componentByTypeShort = [];
+
+                            if (place.address_components) {
+                                for (var i = 0; i < place.address_components.length; i++) {
+                                    var addressType = place.address_components[i].types[0];
+                                    componentByType[addressType] = place.address_components[i].long_name
+
+                                    componentByType[addressType] = "undefined" === componentByType[addressType] ?
+                                            '' : componentByType[addressType]
+
+                                    componentByTypeShort[addressType] = place.address_components[i].short_name
+
+                                    componentByTypeShort[addressType] = "undefined" === componentByTypeShort[addressType] ?
+                                            '' : componentByTypeShort[addressType]
+                                }
+                            }
+
+                            var streetLine1 = componentByType['subpremise'] || '';
+                            streetLine1 += (streetLine1 ? '/' : '') + (componentByType['street_number'] || '');
+
+                            var address = {
+                                street : [streetLine1, componentByType['route'] || ''].join(' '),
+                                city : componentByType['locality'] || componentByType['administrative_area_level_2'],
+                                state : componentByTypeShort['administrative_area_level_1'],
+                                postcode : componentByType['postal_code'],
+                                place: place,
+                                establishment: place ? place.name : undefined
+                            };
+
+                            $rootScope.$broadcast('addressChanged', {id: ctrl.id, address: address});
+                        };
+
+                        google.maps.event.addListener(autocomplete, 'place_changed', function(){
+                            onAddressChange(autocomplete);
+                        });
+
+                        $rootScope.$on('addressChanged', function(event, params){
+
+                            if(params.id == ctrl.id){
+
+                                $scope.$apply(function(){
+
+                                    ctrl.onBeforeAddressUpdate({address: params.address})
+
+                                    ctrl.streetOnly = params.address.street || '';
+                                    ctrl.formatUnitLevelStreet();
+                                    //ctrl.street = params.address.street || '';
+                                    ctrl.city = params.address.city || '';
+                                    ctrl.state= params.address.state || '';
+                                    ctrl.postcode= params.address.postcode || '';
+
+                                    params.address.place = params.address.place || {};
+                                    ctrl.address = params.address.place.formatted_address || ctrl.address;
+
+                                    ctrl.establishment= params.address.establishment || '';
+
+                                    ctrl.showNote = true;
+
+                                    if(ctrl.clearOnBlur == true){
+                                        ctrl.address = '';
+                                    }
+                                });
+                            }
+
+                        });
+                    };
+
+                    initGoogleAutocomplete();
+
+                    // setTimeout(function () {
+                    //     $('input', $element).attr('autocomplete', 'new-password');
+                    //     console.log('!!!!!!!!!!!!!!!!!!!!!!!!', $('input', $element).attr('autocomplete'));
+                    // }, 400)
+
+                    $scope.$watch('country', function () {
+                        if(autocomplete){
+                            autocomplete.setComponentRestrictions({country: ctrl.country || 'au'});
+                        }
+                    })
+
+                    ctrl.handleBlur = function () {
+                        if(ctrl.clearOnBlur == true){
+                            ctrl.address = '';
+                        }
+                    }
+
+                    $scope.$watch(function(){
+                                return ctrl.unitLevel;
+                            },
+                            function (oldVal, newVal) {
+                                setTimeout(function () {
+                                    $scope.$apply(function () {
+                                        ctrl.formatUnitLevelStreet();
+                                    })
+                                })
+                            }
+                    )
+                }
+            }
+
+            if (app) {
+                app.component(
+                        'googleAutocomplete', {
+                            template: templateHTML,
+                            controller: controller,
+                            bindings: {
+                                onSearch:'&',
+                                onBeforeAddressUpdate:'&',
+                                id : '@',
+                                placeholder: '@',
+                                styleClass: '@',
+                                address: '=',
+                                unitLevel : '=?',
+                                street : '=',
+                                city : '=',
+                                state : '=',
+                                postcode : '=',
+                                country: '=',
+                                establishment: '=?',
+                                types: '@',
+                                clearOnBlur: '=?'
+                            }
+                        }
+                )
+            }
+
+
+        })(window.app)
+
+    </script>
+
+</apex:component>

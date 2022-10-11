@@ -1,0 +1,9 @@
+<apex:component id="vertic_Content" layout="none" access="global" controller="vertic_ContentCtrl" >
+
+	<apex:attribute name="paramsJSON" type="String" description="Input Parameters in JSON format" assignTo="{!paramsStr}"/>
+	<!--<apex:attribute name="components" type="List" description="List of Visualforce Components" assignTo="{!componentsAsObjects}"/>-->
+
+	<apex:variable var="components" value="{!componentsAsObjects}"/>
+	<apex:variable var="componentsSize" value="{!componentsAsObjects.size}"/>
+
+</apex:component>

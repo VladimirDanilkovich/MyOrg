@@ -1,0 +1,42 @@
+.THIS .wizard-navigation {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.THIS .wizard-navigation-item {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.THIS .wizard-navigation-item-selected {
+    font-weight: bold;
+}
+
+.THIS.variant-modal .wizard-step-body{
+    padding: 0 15px;
+}
+
+.THIS.variant-modal {
+    margin: 0 -16px -16px;
+    width: calc(100% + 32px);
+}
+
+.THIS.variant-modal .wizard-step-footer{
+    padding: 0 16px 16px;
+    border-top: 1px solid lightgray;
+    background-color: rgb(243, 242, 242);
+}
+
+.THIS.variant-modal .wizard-step-errors-container .pageLevelErrors{
+    padding: 0 16px;
+    border-bottom: 1px solid lightgray;
+}
+
+.THIS.variant-modal .slds-tabs_default__content{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}

@@ -1,0 +1,14 @@
+<apex:component id="vertic_URLEncode">
+    <script>
+        (function(app){
+            app.filter('urlEncode', function() {
+                return function(input) {
+                    if(input) {
+                        return window.encodeURIComponent(input);
+                    }
+                    return '';
+                }
+            });
+        })(window.app)
+    </script>
+</apex:component>

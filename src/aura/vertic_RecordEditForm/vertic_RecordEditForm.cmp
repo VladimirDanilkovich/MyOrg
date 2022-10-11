@@ -1,0 +1,106 @@
+<aura:component description="vertic_RecordEditForm" extends="c:vertic_Modal" implements="force:hasRecordId,force:hasSObjectName">
+
+    <!-- Attribute Overrides -->
+    <aura:set attribute="hideContentOnBusy" value="{!false}"/>
+
+    <!-- Attributes -->
+    <aura:attribute name="sections" type="List" default="[]"/> <!-- default="[{title: 'Contact Information', columns: [{fields: [{name: 'Name'}]}, {fields: [{name: 'AccountId'}]}]}]" -->
+    <aura:attribute name="recordTypeId" type="String"/>
+    <aura:attribute name="hideButtons" type="Boolean" default="{!false}"/>
+    <aura:attribute name="saveTitle" type="String" default="{!'Save'}"/>
+    <aura:attribute name="buttons" type="Aura.Component[]">
+        <lightning:button type="button"
+                          name="cancel"
+                          label="Cancel"
+                          disabled="{!v.isBusy}"
+                          onclick="{!c.handleCancelClick}"
+                          tabindex="-1"
+        />
+        <lightning:button variant="brand"
+                          type="submit"
+                          name="save"
+                          disabled="{!v.isBusy}"
+                          label="{!if(empty(v.saveTitle), 'Save', v.saveTitle)}"
+                          onclick="{!c.handleSaveClick}"
+        />
+    </aura:attribute>
+    <aura:attribute name="preventDefaultSubmit" type="Boolean" default="{!false}"/>
+
+
+    <!-- Events -->
+    <aura:registerEvent name="onSuccess" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onCancel" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onSubmit" type="c:vertic_ComponentEvent"/>
+
+    <!-- Handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+
+
+    <lightning:recordEditForm aura:id="recordEditForm"
+                              objectApiName="{!v.sObjectName}"
+                              recordId="{!v.recordId}"
+                              recordTypeId="{!v.recordTypeId}"
+                              onload="{!c.handleLoad}"
+                              onsubmit="{!c.handleSubmit}"
+                              onsuccess="{!c.handleSuccess}"
+                              onerror="{!c.handleError}">
+
+        <lightning:messages/>
+
+        <aura:if isTrue="{!empty(v.sections)}">
+            {!v.body}
+            <aura:set attribute="else">
+                <aura:iteration items="{!v.sections}" var="section">
+
+                    <aura:if isTrue="{!not(empty(section.title))}">
+                        <div class="slds-grid slds-gutters_small slds-p-horizontal__small">
+                            <div class="slds-col slds-has-flexi-truncate slds-size_1-of-1" role="listitem">
+                                <div class="slds-section slds-is-open">
+                                    <h3 class="slds-section__title slds-theme_shade">
+                                        <span class="slds-truncate slds-p-horizontal_small" title="{#section.title}">{#section.title}</span>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </aura:if>
+
+                    <div class="slds-grid slds-gutters_small slds-m-bottom_medium">
+
+                        <aura:iteration items="{!section.columns}" var="column">
+                            <div class="{! 'slds-col slds-has-flexi-truncate ' + column.class }" role="listitem">
+                                <aura:iteration items="{!column.fields}" var="field">
+                                    <aura:if isTrue="{!not(empty(field.label))}">
+                                        <label class="slds-form-element__label slds-no-flex">{!field.label}</label>
+                                    </aura:if>
+                                    <lightning:inputField fieldName="{!field.name}"
+                                                          variant="{!if(not(empty(field.label)), 'label-hidden', '')}"
+                                                          value="{!field.value}"
+                                                          disabled="{!field.disabled == true}"
+                                                          class="{!'slds-m-bottom_medium ' + field.class + if(not(empty(field.label)), 'label-hidden', '')}"
+
+                                    />
+                                </aura:iteration>
+                            </div>
+                        </aura:iteration>
+
+                    </div>
+
+                </aura:iteration>
+            </aura:set>
+        </aura:if>
+
+        <aura:if isTrue="{!and(v.hideButtons != true, empty(v.modalInstance))}">
+            <div class="slds-m-top_medium slds-text-align_right">
+                {!v.buttons}
+            </div>
+        </aura:if>
+
+    </lightning:recordEditForm>
+
+    <aura:set attribute="footer">
+        <aura:if isTrue="{!v.hideButtons != true}">
+            {!v.buttons}
+        </aura:if>
+    </aura:set>
+
+</aura:component>

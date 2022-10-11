@@ -1,0 +1,154 @@
+<aura:component description="vertic_WizardStep" extensible="true" extends="c:vertic_Base">
+
+    <aura:attribute type="String" name="name" default="{!globalId + 'vertic_WizardStep'}" required="true" access="public"/>
+    <aura:attribute type="String" name="wizardName" access="public"/>
+    <aura:attribute type="String" name="title" default="Step Title" access="public"/>
+    <aura:attribute type="String" name="header" default="" access="public"/>
+    <aura:attribute name="isAccessible" type="Boolean" default="{!true}"/>
+    <aura:attribute name="isVisible" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isValidationEnabled" type="Boolean" default="{!true}"/>
+    <aura:attribute name="isValidateOnSaveEnabled" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isSaveRequired" type="Boolean" default="{!false}"/>
+    <aura:attribute name="validateOptions" type="Map" access="public"/>
+
+    <aura:attribute type="String" name="errorsTitle" access="public"/>
+    <aura:attribute type="Boolean" name="showErrorsSummary" access="public" default="{!true}"/>
+
+    <aura:attribute name="isShowPreviousBtn" type="Boolean" default="{!true}"/>
+    <aura:attribute name="isDisabledPreviousBtn" type="Boolean" default="{!false}"/>
+    <aura:attribute name="previousBtnClass" type="String" default="test"/>
+    <aura:attribute name="previousBtnLabel" type="String" default="Previous"/>
+    <aura:attribute name="previousBtnAriaLabel" type="String" default="Previous"/>
+
+    <aura:attribute name="isShowNextBtn" type="Boolean" default="{!true}"/>
+    <aura:attribute name="isDisabledNextBtn" type="Boolean" default="{!false}"/>
+    <aura:attribute name="nextBtnClass" type="String"/>
+    <aura:attribute name="nextBtnLabel" type="String" default="Next"/>
+    <aura:attribute name="nextBtnAriaLabel" type="String" default="Next"/>
+
+    <aura:attribute name="isShowSaveBtn" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isDisabledSaveBtn" type="Boolean" default="{!false}"/>
+    <aura:attribute name="saveBtnClass" type="String"/>
+    <aura:attribute name="saveBtnLabel" type="String" default="Save"/>
+    <aura:attribute name="saveBtnAriaLabel" type="String" default="Save"/>
+
+    <aura:attribute name="isShowSubmitBtn" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isDisabledSubmitBtn" type="Boolean" default="{!false}"/>
+    <aura:attribute name="submitBtnClass" type="String"/>
+    <aura:attribute name="submitBtnLabel" type="String" default="Submit"/>
+    <aura:attribute name="submitBtnAriaLabel" type="String" default="Submit"/>
+
+    <aura:attribute name="isShowCancelBtn" type="Boolean" default="{!false}"/>
+    <aura:attribute name="isDisabledCancelBtn" type="Boolean" default="{!false}"/>
+    <aura:attribute name="cancelBtnClass" type="String"/>
+    <aura:attribute name="cancelBtnLabel" type="String" default="Cancel"/>
+    <aura:attribute name="cancelBtnAriaLabel" type="String" default="Cancel"/>
+
+    <aura:attribute name="class" type="String" default="Submit"/>
+    <aura:attribute name="navItemClass" type="String"/>
+    <aura:attribute name="navItemActiveClass" type="String"/>
+
+    <aura:attribute name="hooks" type="Map"/>
+
+    <aura:attribute name="footer" type="Aura.Component[]" access="public"></aura:attribute>
+    <aura:attribute name="customButtons" type="Aura.Component[]" access="public"/>
+
+    <aura:attribute name="errorMessagesCmp" type="Aura.Component[]" access="public">
+        <c:vertic_ErrorMessages></c:vertic_ErrorMessages>
+    </aura:attribute>
+
+    <aura:attribute name="navigationItemCmp" type="Aura.Component[]" access="public">
+        <div role="menuitem" class="{! if(v.isVisible == true, 'wizard-navigation-item-selected ' + v.navItemActiveClass, if(v.isAccessible != true, 'slds-hide', '')) + ' ' + v.navItemClass + ' wizard-navigation-item'}"><span>{!v.title}</span></div>
+    </aura:attribute>
+
+    <!--<aura:method name="next" action="{!c.handleNextClick}"></aura:method>-->
+
+    <aura:handler name="change" value="{!v.isVisible}" action="{!c.handleVisibleChange}"/>
+
+    <aura:registerEvent name="onStepSave" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onStepSubmit" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onStepChange" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onStepCancel" type="c:vertic_ComponentEvent"/>
+
+    <c:vertic_Utils context="{!this}"/>
+
+    <aura:dependency type="COMPONENT" resource="c:vertic_Wizard"/>
+
+    <aura:if isTrue="{!and(v.isAccessible == true, v.isVisible == true)}">
+        <div class="{!v.class}">
+            <div class="{!if(v.showErrorsSummary == false, 'slds-hide', '') + ' wizard-step-errors-container'}">
+            <!--<div class="wizard-step-errors-container">-->
+                {!v.errorMessagesCmp}
+            </div>
+            <div class="wizard-step-header">
+                {!v.header}
+            </div>
+            <div class="wizard-step-body">
+                <div aura:id="form">
+                    {!v.body}
+                </div>
+            </div>
+            <div class="wizard-step-footer">
+                <aura:if isTrue="{!empty(v.footer)}">
+
+                    <div class="slds-clearfix slds-m-top_medium">
+                        <aura:if isTrue="{!v.isShowPreviousBtn == true}">
+                            <lightning:button label="{!v.previousBtnLabel}"
+                                              class="{!v.previousBtnClass}"
+                                              onclick="{!c.handlePreviousClick}"
+                                              disabled="{!v.isDisabledPreviousBtn}"
+                                              ariaLabel="{!v.previousBtnAriaLabel}"
+                            />
+                        </aura:if>
+
+                        <aura:if isTrue="{!v.isShowNextBtn == true}">
+                            <lightning:button label="{!v.nextBtnLabel}"
+                                              class="{!v.nextBtnClass}"
+                                              onclick="{!c.handleNextClick}"
+                                              disabled="{!v.isDisabledNextBtn}"
+                                              ariaLabel="{!v.nextBtnAriaLabel}"
+                            />
+                        </aura:if>
+
+                        <aura:if isTrue="{!v.isShowSubmitBtn == true}">
+                            <lightning:button label="{!v.submitBtnLabel}"
+                                              class="{!v.submitBtnClass}"
+                                              onclick="{!c.handleSubmitClick}"
+                                              disabled="{!v.isDisabledSubmitBtn}"
+                                              ariaLabel="{!v.submitBtnAriaLabel}"
+                            />
+                        </aura:if>
+
+                        <aura:if isTrue="{!v.isShowSaveBtn == true}">
+                            <lightning:button label="{!v.saveBtnLabel}"
+                                              class="{!v.saveBtnClass}"
+                                              onclick="{!c.handleSaveClick}"
+                                              disabled="{!v.isDisabledSaveBtn}"
+                                              ariaLabel="{!v.saveBtnAriaLabel}"
+                            />
+                        </aura:if>
+
+                        <aura:if isTrue="{!v.isShowCancelBtn == true}">
+                            <lightning:button label="{!v.cancelBtnLabel}"
+                                              class="{!v.cancelBtnClass}"
+                                              onclick="{!c.handleCancelClick}"
+                                              disabled="{!v.isDisabledCancelBtn}"
+                                              ariaLabel="{!v.cancelBtnAriaLabel}"
+                            />
+                        </aura:if>
+
+                        <aura:if isTrue="{!not(empty(v.customButtons))}">
+                            {!v.customButtons}
+                        </aura:if>
+                    </div>
+
+                    <aura:set attribute="else">
+                        {!v.footer}
+                    </aura:set>
+                </aura:if>
+
+            </div>
+        </div>
+    </aura:if>
+
+</aura:component>

@@ -1,0 +1,11 @@
+<apex:component id="vertic_AllowHTML">
+    <script>
+        (function(app){
+            app.filter("allowHtml", ['$sce', function($sce) {
+                return function(htmlCode){
+                    return $sce.trustAsHtml(htmlCode);
+                }
+            }]);
+        })(window.app)
+    </script>
+</apex:component>

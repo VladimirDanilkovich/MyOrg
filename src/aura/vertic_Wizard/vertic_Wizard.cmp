@@ -1,0 +1,72 @@
+<aura:component description="vertic_Wizard">
+
+    <aura:attribute type="String" name="name" default="{!globalId + '-vertic_wizard'}" access="public"/>
+    <aura:attribute type="String" name="currentStep" access="public"/>
+    <aura:attribute type="Boolean" name="showNavigation" default="false" access="public"/>
+    <aura:attribute type="Boolean" name="isBusy" default="false" access="public"/>
+    <aura:attribute type="String" name="variant" default="modal" access="public"/>
+    <aura:attribute name="validateOptions" type="Map" access="public"/>
+
+    <aura:attribute type="String" name="class" access="public"/>
+    <aura:attribute type="String" name="stepClass" access="public"/>
+    <aura:attribute type="String" name="navClass" access="public"/>
+    <aura:attribute type="String" name="navItemClass" access="public"/>
+    <aura:attribute type="String" name="navItemActiveClass" access="public"/>
+
+    <aura:attribute type="String" name="errorsTitle" access="public" default="Errors:"/>
+
+    <aura:attribute name="previousBtnClass" type="String" default="test"/>
+    <aura:attribute name="nextBtnClass" type="String" default="test"/>
+    <aura:attribute name="saveBtnClass" type="String" default="test"/>
+    <aura:attribute name="submitBtnClass" type="String" default="test"/>
+
+    <aura:attribute type="Aura.Component[]" name="steps"></aura:attribute>
+    <aura:attribute type="List" name="navigationComponentsList"></aura:attribute>
+
+    <aura:method name="getCurrentStep" action="{!c.handleGetCurrentStep}" access="public"></aura:method>
+    <aura:method name="isCurrentStepSaveRequired" action="{!c.handleIsCurrentStepSaveRequired}" access="public"></aura:method>
+    <aura:method name="scrollTop" action="{!c.handleScrollTop}"></aura:method>
+    <aura:method name="setErrorsAndScrollTopIfAny" action="{!c.handleSetErrorsAndScrollTop}">
+        <aura:attribute type="List" name="errors" default="[]"></aura:attribute>
+        <aura:attribute type="String" name="title"></aura:attribute>
+    </aura:method>
+    <aura:method name="next" action="{!c.handleNext}"></aura:method>
+    <aura:method name="previous" action="{!c.handlePrevious}"></aura:method>
+
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+    <aura:handler name="change" value="{! v.currentStep }" action="{! c.handleCurrentStepChange }"/>
+
+    <aura:handler name="onStepChange" event="c:vertic_ComponentEvent" action="{!c.handleStepChange}" includeFacets="true"/>
+    <aura:handler name="onStepSave" event="c:vertic_ComponentEvent" action="{!c.handleStepSave}" includeFacets="true"/>
+    <aura:handler name="onStepSubmit" event="c:vertic_ComponentEvent" action="{!c.handleStepSubmit}" includeFacets="true"/>
+    <aura:handler name="onStepCancel" event="c:vertic_ComponentEvent" action="{!c.handleStepCancel}" includeFacets="true"/>
+
+    <aura:registerEvent name="onSave" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onSubmit" type="c:vertic_ComponentEvent"/>
+    <aura:registerEvent name="onCancel" type="c:vertic_ComponentEvent"/>
+
+    <div aura:id="wizard-container" class="{!v.class + ' variant-' + v.variant}" name="{!v.name}">
+
+        <aura:if isTrue="{! v.isBusy }">
+            <lightning:spinner alternativeText="Loading..."/>
+            <!--<div class="slds-align_absolute-center" style="height: 4rem;">-->
+                <!--<div role="status" class="slds-spinner slds-spinner_medium slds-spinner_inline">-->
+                    <!--<span class="slds-assistive-text">Loading</span>-->
+                    <!--<div class="slds-spinner__dot-a"></div>-->
+                    <!--<div class="slds-spinner__dot-b"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </aura:if>
+
+        <aura:if isTrue="{!v.showNavigation}">
+            <div role="menu" class="{! v.navClass + ' wizard-navigation'}">
+                <aura:iteration items="{!v.navigationComponentsList}" var="navigationCmps">{!navigationCmps}</aura:iteration>
+            </div>
+        </aura:if>
+
+        <aura:iteration items="{!v.steps}" var="step">
+            {!step}
+        </aura:iteration>
+    </div>
+
+</aura:component>

@@ -1,0 +1,7 @@
+<apex:component id="vertic_DynamicComponent" layout="none">
+
+	<apex:attribute name="component" description="Dynamic Component" type="ApexPages.Component"/>
+
+	<apex:dynamicComponent componentValue="{!component}" invokeAfterAction="true"/>
+
+</apex:component>

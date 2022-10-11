@@ -1,0 +1,68 @@
+<aura:component description="vertic_RecordTypeSelect" extends="c:vertic_Modal" implements="force:hasSObjectName">
+
+    <!-- Attribute Overrides -->
+
+    <!-- Attributes -->
+    <aura:attribute name="default" type="String" description="Default Record Type API Name."/>
+    <aura:attribute name="condition" type="String" access="public"/>
+
+    <aura:attribute name="selectedOption" type="String" access="private"/>
+
+
+    <!-- Events -->
+
+    <!-- Handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+
+
+    <div aura:id="form" class="slds-form" role="list">
+
+        <div class="slds-grid slds-gutters_small slds-m-bottom_medium">
+
+            <div class="slds-col slds-has-flexi-truncate slds-size_1-of-3" role="listitem">
+                <legend class="slds-form-element__legend slds-form-element__label slds-text-align_right" lightning-radio-group_radio-group="" style="font-weight: normal;">
+                    <abbr title="required" class="slds-required" lightning-radio-group_radio-group="">*</abbr>Select a record type
+                </legend>
+            </div>
+
+            <lightning:input label="Select a record type"
+                             value="{!v.selectedOption}"
+                             required="{!true}"
+                             class="slds-hide"
+            />
+
+            <div class="slds-col slds-has-flexi-truncate slds-size_2-of-3" role="listitem" aura:id="radio-container">
+                <br/>
+                <aura:iteration items="{!v.meta.dto.records}" var="recordType">
+                    <div class="slds-m-bottom--large">
+                        <lightning:input type="radio"
+                                         label="{#recordType.Name}"
+                                         name="recordType"
+                                         value="{#recordType.Id}"
+                                         onchange="{!c.handleRadioClick}"
+                        />
+                        {!recordType.Description}
+                    </div>
+                </aura:iteration>
+            </div>
+
+        </div>
+
+    </div>
+
+    <aura:set attribute="footer">
+
+        <lightning:button label="Cancel"
+                          type="button"
+                          onclick="{!c.handleCancelClick}"
+        />
+
+        <lightning:button label="Next"
+                          type="button"
+                          variant="brand"
+                          onclick="{!c.handleNextClick}"
+        />
+    </aura:set>
+
+
+</aura:component>

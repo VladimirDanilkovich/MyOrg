@@ -1,0 +1,9 @@
+.THIS .slds-notify.slds-notify_toast {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.THIS .label-hidden label {
+    display: none;
+}

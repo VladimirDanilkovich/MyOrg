@@ -1,0 +1,11 @@
+<!--
+ - Created by vladimirdanilkovich on 10/10/2022.
+ -->
+
+<aura:component description="lwcCmp">
+    <aura:attribute  name="accountName" type="String"/>
+    <aura:attribute name="isBusy" type="Boolean" default="{!false}"/>
+
+    <c:verticLookup label="Test"  object="Account" value="{!v.accountName}" disabled="false" />
+
+</aura:component>

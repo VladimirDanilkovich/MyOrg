@@ -1,0 +1,91 @@
+<!--
+ - Created by vladimirdanilkovich on 4/10/2022.
+ -->
+<aura:component description="MyContactList"
+                implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader,force:appHostable"
+                access="global" extends="c:vertic_Base">
+
+    <aura:attribute name="account" type="Account"/>
+    <aura:attribute name="isBusy" type="Boolean" default="{!false}"/>
+    <aura:attribute name="contacts" type="Contact"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="searchTimeoutId" type="Object"/>
+    <aura:attribute name="contactEmail" type="String"/>
+    <aura:attribute name="accountName" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.myAction}"/>
+
+    <force:recordData aura:id="accountRecord"
+                      recordId="{!v.recordId}"
+                      targetFields="{!v.account}"
+                      layoutType="FULL"
+    />
+
+    
+    <lightning:card iconName="standard:contact" title="{!'Contact List for Account'}">
+
+        <div class="slds-form-element">
+
+          <!--  <lightning:input  aura:id="findAccount" name="findAccount" type="search" label="Enter Account" value="{!v.accountName}" />-->
+            <div class="slds-col slds-size_1-of-1">
+                <c:strike_lookup_clickable
+                                  label="Account"
+                                  object="Account"
+                                  iconName="standard:account"
+                                  value="{!v.meta.dto.accountId}"
+                                  searchField="Name"
+
+
+                />
+            </div>
+
+
+        </div>
+
+        <aura:set attribute="actions">
+
+            <lightning:buttonIcon iconName="utility:refresh" onclick="{!c.myAction}"/>
+
+        </aura:set>
+
+        <lightning:input aura:id="enterSearch" name="enterSearch" type="search" label="Enter Email" value="{!v.contactEmail}" onchange="{!c.onSearchTermChange}"/>
+
+        <div class="slds-p-top_x-large">
+       <!-- <lightning:datatable data="{!v.contacts}" columns="{!v.columns}" keyField="Id" hideCheckboxColumn="true"/>-->
+        <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
+        <thead>
+        <tr class="slds-line-height_reset">
+        <th scope="col">
+            <div class="slds-truncate">First Name</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">Last Name</div>
+        </th>
+        <th scope="col">
+        <div class="slds-truncate">Email</div>
+        </th>
+        <th scope="col">
+        <div class="slds-truncate">Mobile</div>
+        </th>
+        </tr>
+        <tr>
+        <th>
+        </th>
+        </tr>
+        </thead>
+        <tbody>
+        <aura:iteration items="{! v.contacts }" var="contact">
+            <tr>
+                <td>{!v.contact.FirstName}</td>
+                <td>{!v.contact.LastName}</td>
+                <td>{!v.contact.Email}</td>
+                <td>{!v.contact.MobilePhone}</td>
+            </tr>
+        </aura:iteration>
+
+        </tbody>
+
+        </table>
+        </div>
+    </lightning:card>
+
+</aura:component>

@@ -1,0 +1,301 @@
+<apex:component id="vertic_FormGroup">
+
+    <apex:variable value="{!'formGroup'}" var="directiveName"/>
+
+    <apex:variable value="{!'vertic_FormGroup'}" var="cmpName"/>
+    <apex:variable value="{! cmpName + 'Template' }" var="defaultTemplateName"/>
+    <apex:variable value="{! 'c-' + cmpName }" var="defaultClassName"/>
+
+    <ang-script style="display: none;" type="text/ng-template" id="{!defaultTemplateName}">
+
+        <div class="{! defaultClassName }">
+
+            <div class="form-group" ng-class="{'has-error' : $ctrl.isShowError() }">
+                <input ng-if="$ctrl.type == 'checkbox'"
+                       id="{{$ctrl.inputId}}"
+                       type="{{$ctrl.type}}"
+                       class="{{$ctrl.classes == undefined ? 'form-control' : $ctrl.classes}}"
+                       ng-model="$ctrl.ngModel"
+                       ng-model-options="$ctrl.ngModelOptions"
+                       ng-required="$ctrl.isRequired"
+                       ng-disabled="$ctrl.isDisabled"
+                       ng-true-value="'{{$ctrl.trueValue}}' || true"
+                       ng-false-value="'{{$ctrl.falseValue}}' || false"
+                       name="{{$ctrl.name}}"
+                       ng-attr-tabindex="{{$ctrl.inputTabindex}}"
+                />
+
+                <label ng-transclude="groupLabel"
+                       ng-if="$ctrl.isLabelHidden != true"
+                       for="{{$ctrl.inputId}}"
+                       class="control-label {{$ctrl.isRequired ? 'is-required' : ''}}">
+                    {{$ctrl.label}}
+                    <span ng-if="$ctrl.label == ' '">&nbsp;</span>
+                    <abbr ng-if="$ctrl.isRequired && $ctrl.hideRequiredMark != true"></abbr>
+                </label>
+
+                <div ng-transclude="groupInput">
+                    <input ng-if="$ctrl.type == 'input' || $ctrl.type == 'input-number'"
+                           id="{{$ctrl.inputId}}"
+                           type="{{$ctrl.type == 'input-number' ? 'number' : 'text'}}"
+                           class="{{$ctrl.classes == undefined ? 'form-control' : $ctrl.classes}}"
+                           ng-model="$ctrl.ngModel"
+                           ng-model-options="$ctrl.ngModelOptions"
+                           ng-required="$ctrl.isRequired"
+                           ng-disabled="$ctrl.isDisabled"
+                           name="{{$ctrl.name}}"
+                           placeholder="{{$ctrl.placeholder}}"
+                           ng-attr-tabindex="{{$ctrl.inputTabindex}}"
+                           ng-attr-maxlength="{{$ctrl.inputMaxlength}}"
+                           ng-attr-min="{{$ctrl.inputMin}}"
+                           ng-attr-max="{{$ctrl.inputMax}}"
+                           ng-attr-step="{{$ctrl.inputStep}}"
+                           ng-pattern="$ctrl.inputNgPattern"
+                    />
+
+                    <input ng-if="$ctrl.type == 'toggle'"
+                           id="{{$ctrl.inputId}}"
+                           type="checkbox"
+                           class="{{$ctrl.classes == undefined ? 'form-control' : $ctrl.classes}}"
+                           ng-model="$ctrl.ngModel"
+                           ng-model-options="$ctrl.ngModelOptions"
+                           ng-required="$ctrl.isRequired"
+                           ng-disabled="$ctrl.isDisabled"
+                           ng-true-value="'{{$ctrl.trueValue}}' || true"
+                           ng-false-value="'{{$ctrl.falseValue}}' || false"
+                           name="{{$ctrl.name}}"
+                           ng-attr-tabindex="{{$ctrl.inputTabindex}}"
+                           data-toggle="toggle"
+                           data-on="{{$ctrl.toggleOn}}"
+                           data-off="{{$ctrl.toggleOff}}"
+                    />
+
+                    <textarea ng-if="$ctrl.type == 'textarea'"
+                              id="{{$ctrl.inputId}}"
+                              class="{{$ctrl.classes == undefined ? 'form-control' : $ctrl.classes}}"
+                              ng-model="$ctrl.ngModel"
+                              ng-model-options="$ctrl.ngModelOptions"
+                              ng-required="$ctrl.isRequired"
+                              ng-disabled="$ctrl.isDisabled"
+                              name="{{$ctrl.name}}"
+                              placeholder="{{$ctrl.placeholder}}"
+                              ng-attr-tabindex="{{$ctrl.inputTabindex}}"
+                              ng-attr-maxlength="{{$ctrl.inputMaxlength}}"
+                              ng-attr-rows="{{$ctrl.inputRows}}"
+                              ng-attr-cols="{{$ctrl.inputCols}}"
+                              ng-pattern="$ctrl.inputNgPattern">
+					</textarea>
+
+                    <select ng-if="$ctrl.type == 'select'"
+                            id="{{$ctrl.inputId}}"
+                            name="{{$ctrl.name}}"
+                            ng-model="$ctrl.ngModel"
+                            ng-model-options="$ctrl.ngModelOptions"
+                            ng-required="$ctrl.isRequired"
+                            ng-disabled="$ctrl.isDisabled"
+                            class="{{$ctrl.classes == undefined ? 'form-control' : $ctrl.classes}}"
+                            ng-attr-tabindex="{{$ctrl.inputTabindex}}">
+                        <option ng-repeat="option in $ctrl.options" ng-disabled="!option.value" value="{{option.value}}" label="{{option.label}}">
+                            {{option.label}}
+                        </option>
+                    </select>
+
+                    <select ng-if="$ctrl.type == 'multi-select'"
+                            id="{{$ctrl.inputId}}"
+                            name="{{$ctrl.name}}"
+                            ng-model="$ctrl.ngModel"
+                            ng-model-options="$ctrl.ngModelOptions"
+                            ng-required="$ctrl.isRequired"
+                            ng-disabled="$ctrl.isDisabled"
+                            class="{{$ctrl.classes == undefined ? 'form-control' : $ctrl.classes}}"
+                            ng-attr-tabindex="{{$ctrl.inputTabindex}}"
+                            ng-attr-size="{{$ctrl.size}}"
+                            multiple="multiple"
+                            multi-picklist="multi-picklist">
+                        <option ng-repeat="option in $ctrl.options" ng-disabled="!option.value" value="{{option.value}}" label="{{option.label}}">
+                            {{option.label}}
+                        </option>
+                    </select>
+                </div>
+                <div ng-if="$ctrl.notes">
+                    <i>
+                        <small>
+                            {{$ctrl.notes}}
+                        </small>
+                    </i>
+                </div>
+                <div ng-if="$ctrl.isShowError()">
+                    <div ng-repeat="error in $ctrl.getErrors()" class="help-block">{{error}}</div>
+                </div>
+            </div>
+
+        </div>
+
+    </ang-script>
+
+
+    <script>
+        (function(app){
+
+            var templateHTML = document.getElementById('{!defaultTemplateName}').innerHTML;
+
+            var controller = function($rootScope, $scope, $element) {
+
+                var ctrl = this;
+
+                ctrl.isShowError = function () {
+
+                    try{
+                        return ctrl.form.$submitted && ctrl.form[ctrl.name].$invalid;
+                    }catch (e){
+                        console.log('ctrl.name', ctrl.name);
+                        console.log('ctrl.form', ctrl.form);
+                        throw e;
+                    }
+
+                }
+
+                ctrl.getErrors = function () {
+
+                    var formInput = ctrl.form[ctrl.name];
+
+                    var errors = [];
+
+                    if(!formInput.$error){
+                        return errors;
+                    }
+
+                    for(var errorKey in formInput.$error){
+
+                        if(formInput.$error[errorKey] != true){
+                            continue;
+                        }
+
+                        var messageAttr = 'message-' + errorKey;
+                        var messageTpl = $($element).attr(messageAttr);
+
+                        if(messageTpl == undefined){
+                            if (errorKey == 'required'){
+                                messageTpl = '{0} is required';
+                            } else if (errorKey == 'min' && ctrl.inputMin){
+                                messageTpl = '{0} should be greater than ' + ctrl.inputMin;
+                            } else if (errorKey == 'max' && ctrl.inputMax){
+                                messageTpl = '{0} should be less than ' + ctrl.inputMax;
+                            } else {
+                                messageTpl = '{0} is invalid';
+                            }
+                        }
+
+                        var message = messageTpl.format(ctrl.errorLabel || ctrl.label);
+
+                        if(errors.indexOf(message) == -1){
+                            errors.push(message);
+                        }
+                    }
+
+                    return errors;
+
+                }
+
+                $scope.$watch(function() {
+                    return ctrl.ngModel;
+                }, function(newValue, oldValue) {
+                    if (newValue != oldValue) {
+                        ctrl.ngChange();
+                    }
+                })
+
+                ctrl.$onInit = function() {
+                    console.log('INIT: {!cmpName}');
+
+                    console.log(ctrl);
+
+                    ctrl.type = ctrl.type || (ctrl.options ? 'select' : 'input');
+                    ctrl.name = ctrl.name || ctrl.label;
+                    ctrl.inputId = ctrl.inputId || ctrl.name;
+                    //ctrl.inputTabindex = ctrl.inputTabindex || -1;
+                    if (ctrl.type === 'multi-select') {
+                        if (typeof $().multiselect == 'function') {
+                            setTimeout(function() {
+                                $('select[multiple]', $element).multiselect({
+                                    buttonWidth: '100%'
+                                })
+                            }, 10)
+                        }
+                    }
+                    if (ctrl.type === 'toggle') {
+                        if (typeof $().bootstrapToggle == 'function') {
+                            setTimeout(function() {
+                                $('input[data-toggle]', $element).bootstrapToggle()
+                            }, 10)
+                        }
+                    }
+                }
+
+            }
+
+            if (app) {
+                app.component(
+                        '{!directiveName}', {
+                            template: templateHTML,
+                            controller: controller,
+                            transclude: {
+                                'groupLabel': '?groupLabel',
+                                'groupInput': '?groupInput'
+                            },
+                            bindings: {
+                                type:'@',
+                                inputId: '@',
+                                name: '@',
+                                label: '@',
+                                errorLabel: '@',
+                                placeholder: '@',
+                                ngModel: '=',
+                                ngModelOptions: '=',
+                                ngChange: '&',
+                                inputNgChange: '=',
+                                trueValue: '@',
+                                falseValue: '@',
+                                isRequired: '=',
+                                isDisabled: '=',
+                                form: '<',
+                                options: '<',
+                                size: '@',
+                                inputTabindex: '@',
+                                inputNgPattern: '<',
+                                inputMin: '@',
+                                inputMax: '@',
+                                inputStep: '@',
+                                inputMaxlength: '@',
+                                inputRows: '@',
+                                inputCols: '@',
+                                notes: '@',
+                                toggleOn: '@',
+                                toggleOnStyle: '@',
+                                toggleOff: '@',
+                                toggleOffStyle: '@',
+                                isLabelHidden: '<',
+                                hideRequiredMark: '<',
+                                classes: '<'
+                            }
+                        }
+                )
+
+                if (!String.prototype.format) {
+                    String.prototype.format = function() {
+                        var args = arguments;
+                        return this.replace(/{(\d+)}/g, function(match, number) {
+                            return typeof args[number] != 'undefined'
+                                    ? args[number]
+                                    : match
+                                    ;
+                        });
+                    };
+                }
+            }
+        })(window.app)
+    </script>
+
+    <c:vertic_MultiPicklist />
+
+</apex:component>

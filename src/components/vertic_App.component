@@ -1,0 +1,92 @@
+<apex:component id="vertic_App">
+
+    <apex:attribute name="include" description="Script inclusions" type="String"/>
+    <apex:attribute name="exclude" description="Script exclusions" type="String"/>
+    <apex:attribute name="dependency" description="AngularJS dependencies" type="String"/>
+
+    <div ng-app="app" ng-controller="mainCtrl" class="ng-cloak">
+        <apex:componentBody />
+
+        <spinner></spinner>
+    </div>
+
+    <c:vertic_Resources exclude="{!exclude}" include="{!include}" dependency="{!dependency}"/>
+
+    <script type="text/javascript">
+
+        window.ngPayload = window.ngPayload || {}
+
+        window.app = angular.module('app', [{!dependency}])
+                .run(function ($rootScope, jobCounter) {
+                    console.log('ang-run');
+
+                    $rootScope.$on('jobCounter', function (event, payload) {
+                        $rootScope.$broadcast('spinner', payload.hasJobs)
+                    })
+
+                    $rootScope.$on('remoteStart', function(event, payload) {
+
+						var skipSpinner = payload && payload.options && payload.options.skipSpinner === false;
+
+                        if (!skipSpinner) {
+                            jobCounter.enqueue(payload)
+                        }
+                    });
+                    $rootScope.$on('remoteFinish', function(event, payload) {
+
+                    	var skipSpinner = payload && payload.options && payload.options.skipSpinner === false;
+
+                        if (!skipSpinner) {
+                            jobCounter.dequeue(payload)
+                        }
+                    });
+                    $rootScope.$on('remoteError', function(action, data, event) {
+                        toastr["error"]("Error: " + data.error.message)
+                    });
+
+					$rootScope.emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+                    window.addEventListener("beforeunload", function (e) {
+                        var confirmationMessage = "\o/";
+
+                        if(jobCounter.hasJobs() && $rootScope.hardReload !== true){
+                            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+                            return confirmationMessage;                            //Webkit, Safari, Chrome
+                        }
+                    });
+
+					$rootScope.joinWithComma = function () {
+                        var parts = [];
+                        if(arguments && arguments.length){
+							[].forEach.call(arguments, function (arg) {
+								if(arg){
+									parts.push('' + arg);
+								}
+							});
+                        }
+                        return parts.join(', ');
+					}
+
+                })
+                .config(function (remoteApiProvider) {
+                    console.log('ang-config');
+                    remoteApiProvider.setApexControllerName(window.ngPayload.apexControllerName || 'vertic_MetadataCtrl');
+                    remoteApiProvider.setApexExtensionControllerNames(window.ngPayload.apexExtensionControllerNames);
+                })
+                .config(['$compileProvider', function ($compileProvider) {
+                    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|javascript):/);
+                }])
+                .controller('mainCtrl', function ($rootScope, jobCounter, remoteApi) {
+                    console.log('ang-ctrl');
+                    console.log('remoteApi', remoteApi)
+                })
+
+    </script>
+
+    <c:vertic_AllowHTML />
+    <c:vertic_RemoteApi />
+    <c:vertic_JobCounter />
+    <c:vertic_Spinner />
+    <c:vertic_Toastr />
+
+</apex:component>

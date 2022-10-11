@@ -1,0 +1,13 @@
+<apex:page id="vertic_ContentBody"
+           showHeader="false"
+           standardStylesheets="false"
+           applyBodyTag="false"
+           applyHtmlTag="false"
+           controller="vertic_ContentCtrl"
+           language="en_AU"
+           renderAs="{!renderAsForBody}"
+           action="{!onInit}">
+
+    <apex:dynamicComponent componentValue="{!panel}" invokeAfterAction="true"/>
+
+</apex:page>
