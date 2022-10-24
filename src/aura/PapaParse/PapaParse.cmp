@@ -1,0 +1,27 @@
+<aura:component description="PapaParse">
+
+    <!-- Attribute Overrides -->
+    <!-- <aura:set attribute="processor" value="vertic_GetPageReferenceContentProc"/> -->
+    <!-- <aura:set attribute="hideContentOnBusy" value="{!false}"/> -->
+
+
+    <!-- Attributes -->
+    <!-- <aura:attribute name="params" type="Map" access="global" required="{!true}"/> -->
+
+    <!-- Events -->
+    <!-- <aura:registerEvent name="onSuccess" type="c:vertic_ComponentEvent"/>-->
+
+    <!-- Handlers -->
+    <!-- <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/> -->
+
+    <ltng:require scripts='/resource/PapaParse/papaparse.min.js' afterScriptsLoaded="{!c.handleScriptLoaded}" />
+
+
+    <!-- Methods -->
+    <aura:method name="parseCSV" action="{!c.handleParseCSV}" access="public">
+        <aura:attribute name="csvString" type="String" required="{!true}"/>
+        <aura:attribute name="config" type="Map"/>
+    </aura:method>
+
+
+</aura:component>

@@ -1,0 +1,140 @@
+<aura:component description="AP_Imports"
+                implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader,force:appHostable"
+                access="global"
+                extends="c:vertic_Base">
+
+    <aura:handler name="init" value="{!this}" action="{!c.initCaseCreation}"/>
+
+
+    <c:vertic_Processor aura:id="contactFilterProcess" response="v.meta.testResponse">
+        <aura:set attribute="initial">
+            <p>
+                Start Loading...
+            </p>
+        </aura:set>
+        <aura:set attribute="pending">
+            <!--            <p>-->
+            <!--                <lightning:icon iconName="utility:sync" class="slds-show_inline" size="x-small"/>-->
+            <!--            </p>-->
+            <!--            <span>-->
+            <!--                    Wait....-->
+            <!--            </span>-->
+        </aura:set>
+        <aura:set attribute="success">
+
+            <lightning:card iconName="standard:logging" class="menu_bar" title="AP Imports">
+                <aura:set attribute="actions">
+                    <div>
+                        <c:PapaParse aura:id="papaParseCmp"/>
+                        <lightning:button label="Upload"/>
+                        <lightning:button label="Validate"/>
+                        <lightning:button label="Save" onclick="{!c.upsertCase}"/>
+                        <lightning:button label="Summary"/>
+                        <lightning:button label="Error Report"/>
+                    </div>
+                </aura:set>
+            </lightning:card>
+            <lightning:card>
+                <div class="slds-grid slds-grid_align-spread">
+                    <div class="slds-col slds-order_1 slds-m-left_large">
+                        <lightning:buttonIcon size="large" iconName="utility:add" onclick="{!c.addCase}" alternativeText="Add"/>
+                    </div>
+                    <div class="slds-col slds-order_2 slds-m-right_large">
+                        <lightning:select aura:id = 'selectButton' name="select" label="How many Case create?" required="true">
+                            <option value="all">All</option>
+                            <option value="selected">Selected</option>
+                        </lightning:select>
+                    </div>
+                </div>
+            </lightning:card>
+
+            <ul>
+
+                <aura:if isTrue="{!not(empty(v.meta.testResponse.dto.caseList))}">
+                    <aura:iteration items="{!v.meta.testResponse.dto.caseList}" var="case" indexVar="indexVar">
+                        <lightning:card>
+                            <li>
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-order_1 slds-m-left_large">
+                                        <lightning:input label="Other Party" type="text" value="{!case.Other_Party__c}"/>
+                                    </div>
+                                    <div class="slds-col slds-order_2 slds-m-left_large">
+                                        <lightning:input label="Other Party Account" type="number" value="{!case.Other_Party_Account__c	}"/>
+                                    </div>
+                                    <div class="slds-col slds-order_3 slds-m-left_large">
+                                        <lightning:input label="Type" type="text" value="{!case.Type}"/>
+                                    </div>
+                                    <div class="slds-col slds-order_4 slds-m-left_large">
+                                        <lightning:input label="Particulars" type="text" value="{!case.Particulars__c}"/>
+                                    </div>
+                                    <div class="slds-col slds-order_5 slds-m-left_large">
+                                        <lightning:input label="Code" type="text" value="{!case.Code__c}"/>
+                                    </div>
+                                    <div class="slds-col slds-order_6 slds-m-left_large">
+                                        <lightning:input label="Reference" type="number" value="{!case.Reference__c}"/>
+                                    </div>
+                                    <div class="slds-col slds-order_7 slds-m-left_large">
+                                        <lightning:input label="Credit" type="number" formatter="currency" step="0.01" value="{!case.Credit__c}"/>
+                                    </div>
+                                    <div class="slds-col slds-order_8 slds-m-left_large">
+                                        <lightning:input label="Date" type="date" value="{!case.Date__c}"/>
+                                    </div>
+                                    <div class="slds-col slds-order_9 slds-m-right_large slds-m-left_large slds-m-top_large">
+                                            <lightning:input name="{!indexVar}" type="checkbox-button" checked="{!case.select}" onchange="{!c.selectCase}" />
+                                    </div>
+                                    <div class="slds-col slds-order_10 slds-m-right_large slds-m-left_large slds-m-top_large">
+                                        <lightning:buttonIcon alternativeText="Delete" name="{!indexVar}" iconName="utility:delete" size="large" variant="bare" onclick="{!c.deleteCase}"/>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="slds-grid slds-m-top_large">
+                                    <div class="slds-col slds-order_1 slds-m-left_large">
+                                        <c:strike_lookup_clickable
+                                                label="Math Campaign"
+                                                object="Campaign"
+                                                iconName="standard:campaign"
+                                                value="{!case.CampaignId}"
+                                                searchField="Name"
+                                        />
+                                    </div>
+                                    <div class="slds-col slds-order_2 slds-m-left_large slds-m-right_small">
+                                        <c:strike_lookup_clickable
+                                                label="Math Contact"
+                                                object="Contact"
+                                                iconName="standard:contact"
+                                                value="{!case.ContactId}"
+                                                searchField="Name"
+                                        />
+                                    </div>
+                                </div>
+                            </li>
+                        </lightning:card>
+                    </aura:iteration>
+                </aura:if>
+            </ul>
+        </aura:set>
+        <aura:set attribute="failure">
+                    <span>
+                    failure....
+                    </span>
+        </aura:set>
+    </c:vertic_Processor>
+    <!-- Attribute Overrides -->
+    <!-- <aura:set attribute="processor" value="vertic_GetPageReferenceContentProc"/> -->
+    <!-- <aura:set attribute="hideContentOnBusy" value="{!false}"/> -->
+
+
+    <!-- Attributes -->
+    <!-- <aura:attribute name="params" type="Map" access="global" required="{!true}"/> -->
+
+    <!-- Events -->
+    <!-- <aura:registerEvent name="onSuccess" type="c:vertic_ComponentEvent"/>-->
+
+    <!-- Handlers -->
+    <!-- <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/> -->
+
+    <!-- Methods -->
+    <!-- <aura:method name="refresh" action="{!c.handleInit}"></aura:method> -->
+
+
+</aura:component>

@@ -5,87 +5,108 @@
                 implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader,force:appHostable"
                 access="global" extends="c:vertic_Base">
 
-    <aura:attribute name="account" type="Account"/>
-    <aura:attribute name="isBusy" type="Boolean" default="{!false}"/>
-    <aura:attribute name="contacts" type="Contact"/>
-    <aura:attribute name="columns" type="List"/>
     <aura:attribute name="searchTimeoutId" type="Object"/>
-    <aura:attribute name="contactEmail" type="String"/>
-    <aura:attribute name="accountName" type="String"/>
-    <aura:handler name="init" value="{!this}" action="{!c.myAction}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.initContactTable}"/>
+    <aura:handler name="change" value="{!v.meta.filter}" action="{!c.handleFilterChange}"/>
 
-    <force:recordData aura:id="accountRecord"
-                      recordId="{!v.recordId}"
-                      targetFields="{!v.account}"
-                      layoutType="FULL"
-    />
-
-    
     <lightning:card iconName="standard:contact" title="{!'Contact List for Account'}">
 
-        <div class="slds-form-element">
-
-          <!--  <lightning:input  aura:id="findAccount" name="findAccount" type="search" label="Enter Account" value="{!v.accountName}" />-->
-            <div class="slds-col slds-size_1-of-1">
-                <c:strike_lookup_clickable
-                                  label="Account"
-                                  object="Account"
-                                  iconName="standard:account"
-                                  value="{!v.meta.dto.accountId}"
-                                  searchField="Name"
 
 
-                />
-            </div>
+            <c:vertic_Processor aura:id ="contactFilterProcess" response="v.meta.testResponse">
+                <aura:set attribute="initial">
+                    <p>
+                    Start Loading...
+                    </p>
+                </aura:set>
+                <aura:set attribute="pending">
+                    <p>
+                        <lightning:icon iconName="utility:sync" class="slds-show_inline" size="x-small"/>
+                    </p>
+                    <span>
+                    Wait....
+                    </span>
+                </aura:set>
+                <aura:set attribute="success">
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-around_medium">
+                    <div class="slds-col slds-size_1-of-1">
+<!--                        <aura:if isTrue="{!not(empty(v.meta.testResponse))}">-->
+                            <div class="slds-p-top_x-large">
+                                <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            <c:strike_lookup_clickable
+                                                    label="Account"
+                                                    object="Account"
+                                                    iconName="standard:account"
+                                                    value="{!v.meta.filter.accountIdFilter}"
+                                                    searchField="Name"
+
+                                            />
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>
+                                            <lightning:input aura:id="emailContactFilter"
+                                                             name="emailContactFilter"
+                                                             type="search"
+                                                             label="Enter Email"
+                                                             value="{!v.meta.filter.emailFilter}"
+                                                             onchange="{!c.handleFilterChange}"
+                                            />
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col">
+                                            <div class="slds-truncate">Account Name</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">First Name</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Last Name</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Email</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Mobile</div>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <aura:iteration items="{! v.meta.dto.contacts }" var="contact">
+                                        <tr>
+                                            <td>{!contact.Account.Name}</td>
+                                            <td>{!contact.FirstName}</td>
+                                            <td>{!contact.LastName}</td>
+                                            <td>{!contact.Email}</td>
+                                            <td>{!contact.MobilePhone}</td>
+                                        </tr>
+                                    </aura:iteration>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+<!--                        </aura:if>-->
+                    </div>
+                    </div>
+                </aura:set>
+                <aura:set attribute="failure">
+                    <span>
+                    failure....
+                    </span>
+                </aura:set>
 
 
-        </div>
+            </c:vertic_Processor>
 
-        <aura:set attribute="actions">
 
-            <lightning:buttonIcon iconName="utility:refresh" onclick="{!c.myAction}"/>
 
-        </aura:set>
-
-        <lightning:input aura:id="enterSearch" name="enterSearch" type="search" label="Enter Email" value="{!v.contactEmail}" onchange="{!c.onSearchTermChange}"/>
-
-        <div class="slds-p-top_x-large">
-       <!-- <lightning:datatable data="{!v.contacts}" columns="{!v.columns}" keyField="Id" hideCheckboxColumn="true"/>-->
-        <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
-        <thead>
-        <tr class="slds-line-height_reset">
-        <th scope="col">
-            <div class="slds-truncate">First Name</div>
-        </th>
-        <th scope="col">
-            <div class="slds-truncate">Last Name</div>
-        </th>
-        <th scope="col">
-        <div class="slds-truncate">Email</div>
-        </th>
-        <th scope="col">
-        <div class="slds-truncate">Mobile</div>
-        </th>
-        </tr>
-        <tr>
-        <th>
-        </th>
-        </tr>
-        </thead>
-        <tbody>
-        <aura:iteration items="{! v.contacts }" var="contact">
-            <tr>
-                <td>{!v.contact.FirstName}</td>
-                <td>{!v.contact.LastName}</td>
-                <td>{!v.contact.Email}</td>
-                <td>{!v.contact.MobilePhone}</td>
-            </tr>
-        </aura:iteration>
-
-        </tbody>
-
-        </table>
-        </div>
     </lightning:card>
 
 </aura:component>

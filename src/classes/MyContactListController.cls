@@ -1,7 +1,6 @@
 public class MyContactListController extends vertic_MetadataProcessor {
 
 
-
     public override vertic_Response process(vertic_Request request) {
         this.request = request == null ? new vertic_MetadataProcessor.MetadataRequest() : (vertic_MetadataProcessor.MetadataRequest) request;
 

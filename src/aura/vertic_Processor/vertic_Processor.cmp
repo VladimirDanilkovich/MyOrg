@@ -1,0 +1,69 @@
+<aura:component extensible="true" description="vertic_Processor" extends="c:vertic_Base">
+
+    <!-- Attribute Overrides -->
+    <!--<aura:set attribute="processor" value="CreateServiceAgreementQAMetaProc"/>-->
+    <aura:set attribute="hideContentOnBusy" value="{!false}"/>
+    <aura:set attribute="spinner"></aura:set>
+
+    <aura:registerEvent name="onInit" type="c:vertic_ComponentEvent"/>
+
+    <aura:attribute name="response" type="Object" access="public"/>
+
+     <aura:method name="process" action="{!c.handleProcess}" access="public">
+         <aura:attribute type="String" name="processor" access="public"/>
+         <aura:attribute type="Object" name="request" access="public"/>
+     </aura:method>
+
+    <aura:attribute name="initial" type="Aura.Component[]" access="public">
+        <lightning:button label="Process"
+                          variant="brand"
+                          type="submit"
+                          disabled="{!v.isBusy}"
+                          onclick="{!c.handleProcess}"
+        />
+    </aura:attribute>
+
+
+    <aura:attribute name="pending" type="Aura.Component[]" access="public">
+        <p>
+            <lightning:icon iconName="utility:sync" class="slds-show_inline" size="small"/>
+            Processing...
+        </p>
+    </aura:attribute>
+
+    <aura:attribute name="success" type="Aura.Component[]" access="public">
+        <c:ScopedNotification iconName="utility:success" iconVariant="success">
+            Processed
+        </c:ScopedNotification>
+    </aura:attribute>
+
+    <aura:attribute name="failure" type="Aura.Component[]" access="public">
+        <c:ScopedNotification iconName="utility:clear" iconVariant="error">
+            {!v.meta.error}
+            <lightning:buttonIcon iconName="utility:close" alternativeText="Close" class="slds-float_right slds-m-right_x-small" size="small" onclick="{!c.handleCloseClick}"/>
+        </c:ScopedNotification>
+    </aura:attribute>
+
+    <aura:attribute name="stage" type="String" default="initial"/>
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+
+    <div>
+        <aura:if isTrue="{!v.stage == 'initial'}">
+            {!v.initial}
+        </aura:if>
+
+        <aura:if isTrue="{!v.stage == 'pending'}">
+            {!v.pending}
+        </aura:if>
+
+        <aura:if isTrue="{!v.stage == 'success'}">
+            {!v.success}
+        </aura:if>
+
+        <aura:if isTrue="{!v.stage == 'failure'}">
+            {!v.failure}
+        </aura:if>
+
+    </div>
+
+</aura:component>
