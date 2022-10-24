@@ -9,7 +9,7 @@
     <c:vertic_Processor aura:id="contactFilterProcess" response="v.meta.testResponse">
         <aura:set attribute="initial">
             <p>
-                Start Loading...
+                Start Loading......
             </p>
         </aura:set>
         <aura:set attribute="pending">
