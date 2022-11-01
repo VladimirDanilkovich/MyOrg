@@ -1,0 +1,30 @@
+.THIS .slds-rich-text-editor {
+    min-height: 450px;
+}
+
+.THIS .slds-rich-text-area__content {
+    max-height: 410px;
+}
+
+.THIS .slds-rich-text-editor__textarea .ql-editor {
+    white-space: inherit;
+}
+
+.THIS .slds-rich-text-editor__textarea th,
+.THIS .slds-rich-text-editor__textarea td,
+.THIS .slds-rich-text-editor__output th,
+.THIS .slds-rich-text-editor__output td {
+    padding: 0px;
+}
+
+.THIS .lightningInputRichText {
+    z-index: auto;
+}
+
+/*.THIS .slds-rich-text-editor__toolbar {*/
+/*display: none;*/
+/*}*/
+
+/*.THIS .slds-rich-text-editor__output p {*/
+/*display: none;*/
+/*}*/
