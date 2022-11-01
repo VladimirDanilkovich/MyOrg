@@ -63,7 +63,6 @@
         </tr>
 
         </apex:repeat>
-
     </table>
 
 </apex:component>

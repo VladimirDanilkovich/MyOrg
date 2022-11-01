@@ -45,14 +45,13 @@ public class CreatePDFAccountMetaProc extends vertic_MetadataProcessor {
             .mapFromSObject('account', this.account)
             .mapFromListSObjects('contacts', contacts);
 
-
         List<Object> components = new List<Object>();
         components.add(new Component.GenerationPdfForAccount(
             dto = dto.getMap()
         ));
         System.debug('CCCC '+components);
         this.response.dto.put('components', components);
-
+        this.response.dto.put('head-component', new Component.GenerationPdfForAccountStyles());
     }
 
 }

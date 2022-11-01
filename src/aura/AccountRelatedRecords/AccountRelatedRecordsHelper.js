@@ -8,7 +8,6 @@
                 cmp.set('v.meta.dto', response.dto)
             });
     },
-
     refreshPDFContentEditor: function (cmp, event, helper) {
         cmp.find('PDFContentEditor').set('v.params', helper.getPDFContentParams(cmp, event, helper));
         cmp.find('PDFContentEditor').refresh();

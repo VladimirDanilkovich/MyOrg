@@ -20,7 +20,6 @@
             clearTimeout(timeoutId);
             timeoutId = setTimeout($A.getCallback(() => {
                     console.log('2');
-
                     let request = {
                         filter: cmp.get('v.meta.filter')
                     }

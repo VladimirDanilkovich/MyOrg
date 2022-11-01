@@ -52,7 +52,6 @@
             width: 33.3%;
 
         }
-
         .table-account > tr:first-child > td {
             border: #030303;
             border-left: 1px solid;

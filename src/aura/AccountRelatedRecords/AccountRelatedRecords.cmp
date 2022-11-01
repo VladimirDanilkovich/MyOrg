@@ -91,7 +91,6 @@
 
                                 </table>
 
-
 <!--                        </aura:if>-->
                     </div>
                     <aura:if isTrue="{!not(empty(v.meta.filter.accountIdFilter))}">
