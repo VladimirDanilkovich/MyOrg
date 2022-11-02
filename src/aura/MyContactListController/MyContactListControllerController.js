@@ -11,6 +11,7 @@
         )
     },
 
+
     handleFilterChange: function (cmp, event, helper) {
         console.log('0');
 
@@ -27,12 +28,11 @@
                     helper.init(cmp, event, helper, request);
                 }
             ), 1000);
-            cmp.set('v.searchTimeoutId', timeoutId);;
+            cmp.set('v.searchTimeoutId', timeoutId);
+
         }
+
+
     },
-    handleAccountIdChange: function (cmp, event, helper){
-        console.log('55')
-        helper.refreshPDFContentEditor(cmp, event, helper);
-    }
 
 });

@@ -8,7 +8,6 @@
     <aura:attribute name="searchTimeoutId" type="Object"/>
     <aura:handler name="init" value="{!this}" action="{!c.initContactTable}"/>
     <aura:handler name="change" value="{!v.meta.filter}" action="{!c.handleFilterChange}"/>
-    <aura:handler name="change" value="{!v.meta.filter.accountIdFilter}" action="{!c.handleAccountIdChange}" />
 
     <lightning:card iconName="standard:contact" title="{!'Contact List for Account'}">
 
@@ -29,10 +28,11 @@
                     </span>
                 </aura:set>
                 <aura:set attribute="success">
-                    <div class="slds-grid slds-wrap slds-gutters slds-m-around_medium ">
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-around_medium">
+                    <div class="slds-col slds-size_1-of-1">
 <!--                        <aura:if isTrue="{!not(empty(v.meta.testResponse))}">-->
-
-                                <table class="slds-table slds-table_bordered ">
+                            <div class="slds-p-top_x-large">
+                                <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
                                     <thead>
                                     <tr>
                                         <th>
@@ -91,18 +91,10 @@
 
                                 </table>
 
-
+                            </div>
 <!--                        </aura:if>-->
                     </div>
-                    <aura:if isTrue="{!not(empty(v.meta.filter.accountIdFilter))}">
-                    <div class="slds-grid slds-gutters_small slds-p-horizontal__small">
-                        <div class="slds-col slds-has-flexi-truncate" role="listitem">
-                            <c:vertic_ContentPreview aura:id="PDFContentEditor"
-                                                     recordId="{!v.meta.filter.accountIdFilter}"
-                                                     iFrameHeight="800px"/>
-                        </div>
                     </div>
-                    </aura:if>
                 </aura:set>
                 <aura:set attribute="failure">
                     <span>
