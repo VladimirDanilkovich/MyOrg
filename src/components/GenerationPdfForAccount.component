@@ -2,28 +2,28 @@
 
     <apex:attribute name="dto" description="Data Transfer Object" type="Map"/>
     <div>
-<p>Account Related Records</p>
+<p style="text-align: center ;font-size: 2.4em;">Account Related Records</p>
     </div>
-    <table class="table-account">
-        <tr >
-            <td class="accountLabel">
-                <div>Account Name</div>
+    <table  style="padding: 0;  border-spacing: 0px; border: #030303; border:1px solid; vertical-align: top; margin: 0px; width: 100%">
+        <tr>
+            <td style="border: #030303;  border-right:1px solid; width: 50%">
+                <div style="background-color: #9ea9b5;  opacity: 0.4; text-align: center; font-weight: bold; font-size: 1.5em;  ">Account Name</div>
             </td>
-            <td>
-                <div>Account Id</div>
+            <td  style="border: #030303;  border-left:1px solid; width: 25%">
+                <div style="background-color: #9ea9b5;  opacity: 0.4; text-align: center; font-weight: bold; font-size: 1.5em;  "  >Account Id</div>
             </td>
-            <td >
-                <div>Phone</div>
+            <td style="border: #030303; border-left:1px solid; width: 25%">
+                <div style="background-color: #9ea9b5;  opacity: 0.4; text-align: center; font-weight: bold; font-size: 1.5em;  ">Phone</div>
             </td>
         </tr>
         <tr>
-            <td>
+            <td style="border: #030303; border-right:1px solid; width: 50%">
                 <div>{!dto['account'].Name}</div>
             </td>
-            <td>
+            <td  style="border: #030303; border-left:1px solid; width: 25%">
                 <div>{!dto['account'].Id}</div>
             </td>
-            <td>
+            <td style="border: #030303; border-left:1px solid; width: 25%">
                 <div>{!dto['account'].Phone}</div>
             </td>
         </tr>
@@ -31,33 +31,33 @@
     <br/>
     <br/>
     <br/>
-    <table class="table-contact">
+    <table  style="padding: 0;  border-spacing: 0px; border: #030303; border:1px solid; vertical-align: top; margin: 0px; width: 100%">
         <tr>
-            <td>
-                <div >Id Contact</div>
+            <td style="border: #030303; border-left:1px solid; width: 25%">
+                <div style="background-color: #9ea9b5;  opacity: 0.4; text-align: center; font-weight: bold; font-size: 1.5em;  ">Id Contact</div>
             </td>
-            <td >
-                <div >First Name</div>
+            <td style="border: #030303;  border-right:1px solid; width: 25%">
+                <div style="background-color: #9ea9b5;  opacity: 0.4; text-align: center; font-weight: bold; font-size: 1.5em;  ">First Name</div>
             </td>
-            <td  >
-                <div >Last Name</div>
+            <td  style="border: #030303;  border-left:1px solid; width: 25%">
+                <div style="background-color: #9ea9b5;  opacity: 0.4; text-align: center; font-weight: bold; font-size: 1.5em;  "  >Last Name</div>
             </td>
-            <td >
-                <div>Email</div>
+            <td style="border: #030303; border-left:1px solid; width: 25%">
+                <div style="background-color: #9ea9b5;  opacity: 0.4; text-align: center; font-weight: bold; font-size: 1.5em;  ">Email</div>
             </td>
         </tr>
         <apex:repeat var="contact" value="{!dto['contacts']}">
-        <tr >
-            <td >
+        <tr>
+            <td style="border: #030303; border-right:1px solid; border-top: 1px solid; width: 25%">
                 <div>{!contact['Id']}</div>
             </td>
-            <td>
+            <td  style="border: #030303; border-left:1px solid; border-top: 1px solid; width: 25%">
                 <div>{!contact['FirstName']}</div>
             </td>
-            <td>
+            <td style="border: #030303; border-left:1px solid; border-top: 1px solid; width: 25%">
                 <div>{!contact['LastName']}</div>
             </td>
-            <td>
+            <td style="border: #030303; border-left:1px solid;  border-top: 1px solid; width: 25%">
                 <div>{!contact['Email']}</div>
             </td>
         </tr>
@@ -65,5 +65,6 @@
         </apex:repeat>
 
     </table>
+
 
 </apex:component>

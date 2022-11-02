@@ -1,5 +1,6 @@
-<apex:component id="GenerationPdfForAccountStyles" layout="none">
+<apex:component id="GenerationPdfForAccountStyles">
 
+    <apex:attribute name="dto" description="Data Transfer Object" type="Map"/>
 
     <style>
 
@@ -7,60 +8,36 @@
             font-family: sans-serif !important;
         }
 
-        p {
+
+        p{
             margin: 0 !important;
             font-size: 8pt;
-            text-align: center;
-            font-size: 2.4em;
         }
-
-        table {
-            padding: 0;
-            border-spacing: 0px;
-            border: #030303;
-            border: 1px solid;
-            vertical-align: top;
-            margin: 0px;
-            width: 100%;
+        table.commitment-table {
+            border: 1px solid #E9E9E9;
+            border-collapse: collapse;
+            page-break-inside: avoid;
         }
-        .table-contact td {
+        table.commitment-table th {
             font-size: 9pt;
-            border: 1px solid #030303;
+            background-color: #D9D9D9;
+            border: 1px solid #E9E9E9;
             border-collapse: collapse;
             margin: 5px;
             padding-left: 8px;
-            width: 25%;
         }
-
-        .table-contact > tr:first-child > td {
-            border: #030303;
-            border-left: 1px solid;
-            background-color: #9ea9b5;
-            opacity: 0.4;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.5em;
-
-        }
-
-        .table-account > tr > td {
+        table.commitment-table td {
             font-size: 9pt;
-            border: 1px solid #030303;
+            border: 1px solid #E9E9E9;
             border-collapse: collapse;
             margin: 5px;
             padding-left: 8px;
-            width: 33.3%;
-
         }
-
-        .table-account > tr:first-child > td {
-            border: #030303;
-            border-left: 1px solid;
-            background-color: #9ea9b5;
-            opacity: 0.4;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.5em;
+        table.commitment-table li {
+            font-size: 9pt;
+        }
+        ul {
+            margin-left: 15px !important;
         }
     </style>
 </apex:component>
