@@ -1,0 +1,69 @@
+<apex:component id="GenerationPdfForAccount">
+
+    <apex:attribute name="dto" description="Data Transfer Object" type="Map"/>
+    <div>
+<p>Account Related Records</p>
+    </div>
+    <table class="table-account">
+        <tr >
+            <td class="accountLabel">
+                <div>Account Name</div>
+            </td>
+            <td>
+                <div>Account Id</div>
+            </td>
+            <td>
+                <div>Phone</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div>{!dto['account'].Name}</div>
+            </td>
+            <td>
+                <div>{!dto['account'].Id}</div>
+            </td>
+            <td>
+                <div>{!dto['account'].Phone}</div>
+            </td>
+        </tr>
+    </table>
+    <br/>
+    <br/>
+    <br/>
+    <table class="table-contact">
+        <tr>
+            <td>
+                <div >Id Contact</div>
+            </td>
+            <td>
+                <div >First Name</div>
+            </td>
+            <td>
+                <div >Last Name</div>
+            </td>
+            <td>
+                <div>Email</div>
+            </td>
+        </tr>
+        <apex:repeat var="contact" value="{!dto['contacts']}">
+        <tr>
+            <td>
+                <div>{!contact['Id']}</div>
+            </td>
+            <td>
+                <div>{!contact['FirstName']}</div>
+            </td>
+            <td>
+                <div>{!contact['LastName']}</div>
+            </td>
+            <td>
+                <div>{!contact['Email']}</div>
+            </td>
+        </tr>
+
+        </apex:repeat>
+
+    </table>
+
+</apex:component>

@@ -1,0 +1,32 @@
+<aura:component description="vertic_ContentPreview" extends="c:vertic_Base">
+
+    <!-- Attribute Overrides -->
+    <aura:set attribute="processor" value="vertic_GetPageReferenceContentProc"/>
+    <aura:set attribute="hideContentOnBusy" value="{!false}"/>
+
+
+    <!-- Attributes -->
+    <aura:attribute name="params" type="Map" access="global"/>
+    <aura:attribute name="paramsString" type="String" access="global"/>
+    <aura:attribute name="iFrameWidth" type="String" default="100%" access="global"/>
+    <aura:attribute name="iFrameHeight" type="String" access="global"/>
+
+    <!-- Events -->
+    <!-- <aura:registerEvent name="onSuccess" type="c:vertic_ComponentEvent"/>-->
+
+    <!-- Handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}"/>
+
+    <!-- Methods -->
+    <aura:method name="refresh" action="{!c.handleInit}"></aura:method>
+
+    <aura:method name="getFile" action="{!c.handleGetFile}">
+        <aura:attribute name="fileName" type="String"/>
+    </aura:method>
+
+    <aura:method name="getContent" action="{!c.handleGetContent}"></aura:method>
+    <aura:method name="getHtmlContent" action="{!c.handleGetHtmlContent}"></aura:method>
+
+    <iframe src="{!'/apex/vertic_content?' + v.paramsString}" style="border: 0" width="{!v.iFrameWidth}" height="{!v.iFrameHeight}"/>
+
+</aura:component>
