@@ -12,7 +12,7 @@
             <td>
                 <div>Account Id</div>
             </td>
-            <td >
+            <td>
                 <div>Phone</div>
             </td>
         </tr>
@@ -36,19 +36,19 @@
             <td>
                 <div >Id Contact</div>
             </td>
-            <td >
+            <td>
                 <div >First Name</div>
             </td>
-            <td  >
+            <td>
                 <div >Last Name</div>
             </td>
-            <td >
+            <td>
                 <div>Email</div>
             </td>
         </tr>
         <apex:repeat var="contact" value="{!dto['contacts']}">
-        <tr >
-            <td >
+        <tr>
+            <td>
                 <div>{!contact['Id']}</div>
             </td>
             <td>
